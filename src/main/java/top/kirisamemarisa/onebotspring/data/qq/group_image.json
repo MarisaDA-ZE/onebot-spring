@@ -1,0 +1,32 @@
+{
+  "detail_type": "group",
+  "self_id": "3184397908",
+  "message_type": "group",
+  "message_id": "7326191871866166947",
+  "type": "message",
+  "message": [
+    {
+      "data": {
+        "file_id": "",
+        "path": "C:\\Users\\Administrator\\Documents\\Tencent Files\\3184397908\\nt_qq\\nt_data\\Pic\\2024-01\\Ori\\5cc6bc827250349bc93f58bd01e32017.jpg",
+        "file": "file:///C:\\Users\\Administrator\\Documents\\Tencent Files\\3184397908\\nt_qq\\nt_data\\Pic\\2024-01\\Ori\\5cc6bc827250349bc93f58bd01e32017.jpg"
+      },
+      "type": "image"
+    }
+  ],
+  "sub_type": "",
+  "group_id": "701339984",
+  "user_id": "3184397908",
+  "sender": {
+    "user_id": "3184397908",
+    "nickname": "Hakurei Reimu",
+    "card": "",
+    "role": "admin"
+  },
+  "self": {
+    "platform": "qq",
+    "user_id": "3184397908"
+  },
+  "post_type": "message",
+  "time": 0
+}

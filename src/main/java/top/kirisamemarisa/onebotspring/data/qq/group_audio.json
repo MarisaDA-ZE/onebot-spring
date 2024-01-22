@@ -1,0 +1,28 @@
+{
+  "detail_type": "group",
+  "self_id": "3184397908",
+  "message_type": "group",
+  "message_id": "7326190760047248050",
+  "type": "message",
+  "message": [
+    {
+      "data": {},
+      "type": "unknown"
+    }
+  ],
+  "sub_type": "",
+  "group_id": "701339984",
+  "user_id": "3184397908",
+  "sender": {
+    "user_id": "3184397908",
+    "nickname": "Hakurei Reimu",
+    "card": "",
+    "role": "admin"
+  },
+  "self": {
+    "platform": "qq",
+    "user_id": "3184397908"
+  },
+  "post_type": "message",
+  "time": 0
+}

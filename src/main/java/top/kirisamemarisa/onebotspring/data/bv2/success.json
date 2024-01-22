@@ -1,0 +1,14 @@
+{
+  "data": [
+    "Success",
+    {
+      "name": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\gradio\\a1db9fd4e63c46baf22186dbaacfc7503eebfd96\\audio.wav",
+      "data": null,
+      "is_file": true,
+      "orig_name": "audio.wav"
+    }
+  ],
+  "is_generating": false,
+  "duration": 0.3878464698791504,
+  "average_duration": 1.410496139526367
+}
