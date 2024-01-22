@@ -3,6 +3,7 @@ package top.kirisamemarisa.onebotspring.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import top.kirisamemarisa.onebotspring.service.IBotService;
@@ -10,8 +11,6 @@ import top.kirisamemarisa.onebotspring.utils.BertUtils;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
 import top.kirisamemarisa.onebotspring.utils.MassageUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,7 +18,7 @@ import java.util.Map;
  * @Description: BotServiceImpl.描述
  * @Date: 2024/1/21
  */
-@Service
+@Component
 public class BotServiceImpl implements IBotService {
 
     @Value("${mrs-bot.bot-id}")
@@ -28,15 +27,15 @@ public class BotServiceImpl implements IBotService {
     @Value("${mrs-bot.client-url}")
     private String clientURL;   // 机器人ID
 
-    @Value("${mrs-bot.bv2-url}")
+    @Value("${mrs-bot.bv2.client}")
     private String bv2URL;   // 机器人ID
     @Value("${mrs-bot.target-group}")
     private String targetGroup;   // 目标群号
 
-    @Value("${mrs-bot.bert-vits2-model}")
+    @Value("${mrs-bot.bv2.model-name}")
     private String audioModelName;// 语音模型名称
 
-    @Value("${mrs-bot.bv2-audio-url}")
+    @Value("${mrs-bot.bv2.audio-service}")
     private String audioFileURL;// 模型生成的语音文件的路径
 
     @Value("${mrs-bot.other-api.sex-image-url}")
@@ -89,13 +88,14 @@ public class BotServiceImpl implements IBotService {
                 if (context.contains("来点骚话")) {
                     System.out.println("发送一句骚话...");
                     String template = MassageUtil.groupTextTemplateSingle(targetGroup, saoStr);
-                    HttpUtils.post(url, template);
+                    System.out.println(template);
+//                    HttpUtils.post(url, template);
                 } else if (context.contains("来点骚话语音") || context.contains("来点语音骚话")) {
                     sendAudioMassage(targetGroup, saoStr);
-                } else if (context.contains("复读：") || context.contains("复读:") ) {
+                } else if (context.contains("复读：") || context.contains("复读:")) {
                     String cmd = context.substring(3);
                     sendAudioMassage(targetGroup, cmd);
-                } else if (context.contains("复读文本：") || context.contains("复读文本:") ) {
+                } else if (context.contains("复读文本：") || context.contains("复读文本:")) {
                     String cmd = context.substring(5);
                     String template = MassageUtil.groupTextTemplateSingle(targetGroup, cmd);
                     HttpUtils.post(url, template);
@@ -137,7 +137,7 @@ public class BotServiceImpl implements IBotService {
                     System.out.println(context);
                     String template = MassageUtil.groupImageTemplateSingle(targetGroup, sexURL_AllAge);
                     HttpUtils.post(url, template);
-                } else if (context.contains("帮助") || context.contains("help") ) {
+                } else if (context.contains("帮助") || context.contains("help")) {
                     System.out.println("帮助...");
                     String s =
                             """
@@ -195,7 +195,8 @@ public class BotServiceImpl implements IBotService {
                 String urlPath = fileAbsolutePath.substring(fileAbsolutePath.length() - 50);
                 urlPath = "/" + urlPath.replaceAll("\\\\", "/");
                 String audioTemplate = MassageUtil.groupVoiceTemplate(groupId, audioFileURL + urlPath);
-                HttpUtils.post(cURL, audioTemplate);
+                System.out.println(audioTemplate);
+                //                HttpUtils.post(cURL, audioTemplate);
             }
         }
     }

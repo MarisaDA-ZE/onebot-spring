@@ -1,0 +1,49 @@
+# spring 配置
+server:
+  port: 8047
+
+# MySQL配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.10.101:3306/one_bot?useUnicode=true&characterEncoding=utf8
+    username: marisa
+    password: $pwdByOnlineSQL9563#
+
+mybatis-plus:
+  # 指定 Mapper XML 文件的位置，使用 classpath 通配符指定路径
+  mapper-locations: classpath:mapper/${project.database}/**/*.xml,classpath:mapper/*.xml
+  # 指定实体类的包路径，用于自动扫描并注册类型别名
+  type-aliases-package: top.kirisamemarisa.onebotspring.entity
+  global-config:
+    db-config:
+      id-type: input
+      # 驼峰下划线转换（将数据库字段的下划线命名规则转换为 Java 实体类属性的驼峰命名规则）
+      db-column-underline: true
+      # 刷新 mapper
+      # refresh-mapper: true
+  configuration:
+    # 将 Java 实体类属性的驼峰命名规则转换为数据库字段的下划线命名规则
+    map-underscore-to-camel-case: true
+    # 查询结果中包含空值的列，在映射的时候，不会映射这个字段
+    call-setters-on-nulls: true
+    # 开启 sql 日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 关闭 sql 日志
+    # log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+# 机器人配置
+mrs-bot:
+  bot-id: 2529951593        # 机器人ID
+  target-group: 563445135   # 监控的群聊
+  # 机器人客户端地址
+  client-url: http://192.168.10.101:3000
+  # bert vits2语音模型配置
+  bv2:
+    client: http://192.168.10.101:8860          # 语音服务地址
+    audio-service: http://192.168.10.101:8022   # 生成文件的地址
+    model-name: "delta"                         # 语音模型名字
+  # 第三方接口
+  other-api:
+    # 第三方色图API
+    sex-image-url: https://pixiv.yuki.sh/api/recommend
