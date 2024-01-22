@@ -1,14 +1,14 @@
-package top.kirisamemarisa.onebotdemo.service.impl;
+package top.kirisamemarisa.onebotspring.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import top.kirisamemarisa.onebotdemo.service.IBotService;
-import top.kirisamemarisa.onebotdemo.utils.BertUtils;
-import top.kirisamemarisa.onebotdemo.utils.HttpUtils;
-import top.kirisamemarisa.onebotdemo.utils.MassageUtil;
+import top.kirisamemarisa.onebotspring.service.IBotService;
+import top.kirisamemarisa.onebotspring.utils.BertUtils;
+import top.kirisamemarisa.onebotspring.utils.HttpUtils;
+import top.kirisamemarisa.onebotspring.utils.MassageUtil;
 
 import java.util.ArrayList;
 import java.util.List;

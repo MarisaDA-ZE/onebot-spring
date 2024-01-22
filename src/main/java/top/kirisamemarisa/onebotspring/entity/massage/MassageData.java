@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotdemo.entity.massage;
+package top.kirisamemarisa.onebotspring.entity.massage;
 
 import lombok.Data;
 import lombok.ToString;

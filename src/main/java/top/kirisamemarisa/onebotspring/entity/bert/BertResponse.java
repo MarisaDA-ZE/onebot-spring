@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotdemo.entity.bert;
+package top.kirisamemarisa.onebotspring.entity.bert;
 
 import lombok.Data;
 import lombok.ToString;

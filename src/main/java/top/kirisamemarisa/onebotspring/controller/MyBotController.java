@@ -1,9 +1,9 @@
-package top.kirisamemarisa.onebotdemo.controller;
+package top.kirisamemarisa.onebotspring.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
-import top.kirisamemarisa.onebotdemo.service.IBotService;
+import top.kirisamemarisa.onebotspring.service.IBotService;
 
 
 @CrossOrigin

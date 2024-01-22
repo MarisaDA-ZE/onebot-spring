@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotdemo.service;
+package top.kirisamemarisa.onebotspring.service;
 
 import com.alibaba.fastjson.JSONObject;
 

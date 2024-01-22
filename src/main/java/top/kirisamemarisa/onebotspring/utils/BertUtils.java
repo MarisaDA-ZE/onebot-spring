@@ -1,7 +1,7 @@
-package top.kirisamemarisa.onebotdemo.utils;
+package top.kirisamemarisa.onebotspring.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import top.kirisamemarisa.onebotdemo.entity.bert.BertRequest;
+import top.kirisamemarisa.onebotspring.entity.bert.BertRequest;
 
 /**
  * @Author: MarisaDAZE

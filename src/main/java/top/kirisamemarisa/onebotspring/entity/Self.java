@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotdemo.entity;
+package top.kirisamemarisa.onebotspring.entity;
 
 /**
  * @Author: MarisaDAZE

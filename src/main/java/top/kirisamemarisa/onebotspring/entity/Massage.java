@@ -1,8 +1,8 @@
-package top.kirisamemarisa.onebotdemo.entity;
+package top.kirisamemarisa.onebotspring.entity;
 
 import lombok.Data;
 import lombok.ToString;
-import top.kirisamemarisa.onebotdemo.entity.massage.MassageData;
+import top.kirisamemarisa.onebotspring.entity.massage.MassageData;
 
 
 /**

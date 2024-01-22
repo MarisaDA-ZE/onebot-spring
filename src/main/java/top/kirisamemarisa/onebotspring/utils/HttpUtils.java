@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotdemo.utils;
+package top.kirisamemarisa.onebotspring.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
