@@ -2,26 +2,41 @@
 server:
   port: 8047
 
-# MySQL配置
 spring:
+  # MySQL配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.10.101:3306/one_bot?useUnicode=true&characterEncoding=utf8
     username: marisa
     password: $pwdByOnlineSQL9563#
+  # Redis配置
+  data:
+    redis:
+      host: 192.168.10.101
+      port: 6379
+      database: 2
+      # 读超时
+      timeout: 3000
+      # 连接超时
+      connectTimeout: 6000
+      password: $pwdByRedis@1490
+      # Lettuce连接池
+      lettuce:
+        pool:
+          # 最小空闲连接
+          min-idle: 5
+          # 最大空闲连接
+          max-idle: 10
+          # 最大连接数
+          max-active: 100
+          # 连接分配应该阻塞的最大时间
+          max-wait: 2000
 
 mybatis-plus:
   # 指定 Mapper XML 文件的位置，使用 classpath 通配符指定路径
   mapper-locations: classpath:mapper/${project.database}/**/*.xml,classpath:mapper/*.xml
   # 指定实体类的包路径，用于自动扫描并注册类型别名
   type-aliases-package: top.kirisamemarisa.onebotspring.entity
-  global-config:
-    db-config:
-      id-type: input
-      # 驼峰下划线转换（将数据库字段的下划线命名规则转换为 Java 实体类属性的驼峰命名规则）
-      db-column-underline: true
-      # 刷新 mapper
-      # refresh-mapper: true
   configuration:
     # 将 Java 实体类属性的驼峰命名规则转换为数据库字段的下划线命名规则
     map-underscore-to-camel-case: true
