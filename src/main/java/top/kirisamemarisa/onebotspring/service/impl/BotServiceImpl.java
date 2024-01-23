@@ -2,16 +2,22 @@ package top.kirisamemarisa.onebotspring.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
+import top.kirisamemarisa.onebotspring.service.IBotConfigService;
 import top.kirisamemarisa.onebotspring.service.IBotService;
 import top.kirisamemarisa.onebotspring.utils.BertUtils;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
 import top.kirisamemarisa.onebotspring.utils.MassageUtil;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import static top.kirisamemarisa.onebotspring.common.Constant.CONFIG_SUFFIX;
 
 /**
  * @Author: MarisaDAZE
@@ -20,17 +26,12 @@ import java.util.Map;
  */
 @Component
 public class BotServiceImpl implements IBotService {
-
-    @Value("${mrs-bot.bot-id}")
-    private String botId;   // 机器人ID
-
-    @Value("${mrs-bot.client-url}")
-    private String clientURL;   // 机器人ID
-
+    @Resource
+    private IBotConfigService botConfigService;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
     @Value("${mrs-bot.bv2.client}")
     private String bv2URL;   // 机器人ID
-    @Value("${mrs-bot.target-group}")
-    private String targetGroup;   // 目标群号
 
     @Value("${mrs-bot.bv2.model-name}")
     private String audioModelName;// 语音模型名称
@@ -43,17 +44,37 @@ public class BotServiceImpl implements IBotService {
 
     private Integer temperature = -1;// 空调温度
 
+
     @Override
     public void mainFun(JSONObject data) {
         String messageType = data.getString("message_type");
         JSONArray messageList = data.getJSONArray("message");
+
+        String botId = data.getString("self_id");
+        BotConfig config = null;
         if ("group".equals(messageType)) {  // 群聊消息
+            String sourceId = data.getString("group_id");
+            try {
+                config = (BotConfig) redisTemplate.opsForValue().get(sourceId + CONFIG_SUFFIX);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (ObjectUtils.isEmpty(config)) config = botConfigService.getBotConfigByTargetId(sourceId);
+            if (ObjectUtils.isEmpty(config)) {
+                System.out.println("当前Q群暂无任何配置,正在新建默认配置...");
+                config = botConfigService.createConfig(botId, sourceId, messageType);
+            }
+
+            String targetGroup = config.getUserId();
+            String clientURL = config.getClientUrl();
+
+
             // 群聊只监听at机器人的消息
             boolean atFlag = false;
             System.out.println("消息列表: " + messageList);
             String sender = data.getString("user_id");
             if (botId.equals(sender)) {
-                System.out.println("机器人回调，不必管它...");
+                System.out.println("机器人发送消息，不必管它...");
                 return;
             }
 
@@ -85,16 +106,22 @@ public class BotServiceImpl implements IBotService {
                 System.out.println("somebody @me content is:" + context);
                 String url = clientURL + "/send_msg";
                 String saoStr = "这是场漫长的旅途，但很快，我们就都将抵达各自的终点。";
+                if ("测试".equals(context)) {
+                    String s = "测试消息,目标Q群: " + targetGroup;
+                    String template = MassageUtil.groupTextTemplateSingle(targetGroup, s);
+                    HttpUtils.post(url, template);
+                    return;
+                }
                 if (context.contains("来点骚话")) {
                     System.out.println("发送一句骚话...");
                     String template = MassageUtil.groupTextTemplateSingle(targetGroup, saoStr);
                     System.out.println(template);
 //                    HttpUtils.post(url, template);
                 } else if (context.contains("来点骚话语音") || context.contains("来点语音骚话")) {
-                    sendAudioMassage(targetGroup, saoStr);
+                    sendAudioMassage(clientURL, targetGroup, saoStr);
                 } else if (context.contains("复读：") || context.contains("复读:")) {
                     String cmd = context.substring(3);
-                    sendAudioMassage(targetGroup, cmd);
+                    sendAudioMassage(clientURL, targetGroup, cmd);
                 } else if (context.contains("复读文本：") || context.contains("复读文本:")) {
                     String cmd = context.substring(5);
                     String template = MassageUtil.groupTextTemplateSingle(targetGroup, cmd);
@@ -117,21 +144,21 @@ public class BotServiceImpl implements IBotService {
                     } catch (Exception e) {
                         con = "请设置正确的空调温度。";
                     }
-                    sendAudioMassage(targetGroup, con);
+                    sendAudioMassage(clientURL, targetGroup, con);
                 } else if (context.contains("查询温度")) {
                     String con = "当前群空调温度为" + temperature + "度。";
                     if (temperature == -1) {
                         con = "请先打开空调。";
                     }
-                    sendAudioMassage(targetGroup, con);
+                    sendAudioMassage(clientURL, targetGroup, con);
                 } else if (context.contains("开空调")) {
-                    String con = "哔~，成功开启空调，默认温度为26度。";
+                    String con = "成功开启空调，默认温度为26度。";
                     temperature = 26;
-                    sendAudioMassage(targetGroup, con);
+                    sendAudioMassage(clientURL, targetGroup, con);
                 } else if (context.contains("关空调")) {
                     String con = "已成功关闭空调。";
                     temperature = -1;
-                    sendAudioMassage(targetGroup, con);
+                    sendAudioMassage(clientURL, targetGroup, con);
                 } else if (context.contains("来点二次元")) {
                     System.out.println("发送随机二次元图片...");
                     System.out.println(context);
@@ -163,12 +190,31 @@ public class BotServiceImpl implements IBotService {
 
             }
 
-        } else if ("friend".equals(messageType)) {// 朋友私聊
-            String url = clientURL + "/send_msg";
-            String text = "我只是个机器人，请不要私信我。";
-            // String template = MassageUtil.friendTextTemplateSingle(targetGroup, text);
-            // HttpUtils.post(url, template);
         }
+        // friend、other
+        // 暂时处理不了私聊和朋友消息，因为获取不到发送者QQ号
+        // else if ("friend".equals(messageType)) {// 朋友私聊
+        //     String sourceId = data.getString("group_id");
+        //     try {
+        //         config = (BotConfig) redisTemplate.opsForValue().get(sourceId + CONFIG_SUFFIX);
+        //     } catch (Exception e) {
+        //         e.printStackTrace();
+        //     }
+        //     if (ObjectUtils.isEmpty(config)) {
+        //         config = botConfigService.getBotConfigByTargetId(sourceId);
+        //     }
+        //     if (ObjectUtils.isEmpty(config)) {
+        //         System.out.println("当前Q群暂无任何配置,正在新建默认配置...");
+        //         config = botConfigService.createConfig(botId, sourceId, messageType);
+        //     }
+        //     System.out.println("配置信息: " + config);
+        //     String targetGroup = config.getUserId();
+        //     String clientURL = config.getClientUrl();
+        //     String url = clientURL + "/send_msg";
+        //     String text = "我只是个机器人，请不要私信我。";
+        //      String template = MassageUtil.friendTextTemplateSingle(targetGroup, text);
+        //      HttpUtils.post(url, template);
+        // }
     }
 
     /**
@@ -177,7 +223,7 @@ public class BotServiceImpl implements IBotService {
      * @param groupId 群聊地址
      * @param text    文本
      */
-    private void sendAudioMassage(String groupId, String text) {
+    private void sendAudioMassage(String clientURL, String groupId, String text) {
         System.out.println("发送语音消息...");
         String cURL = clientURL + "/send_msg";
         String bertURL = bv2URL + "/run/predict";
@@ -196,7 +242,7 @@ public class BotServiceImpl implements IBotService {
                 urlPath = "/" + urlPath.replaceAll("\\\\", "/");
                 String audioTemplate = MassageUtil.groupVoiceTemplate(groupId, audioFileURL + urlPath);
                 System.out.println(audioTemplate);
-                //                HttpUtils.post(cURL, audioTemplate);
+                HttpUtils.post(cURL, audioTemplate);
             }
         }
     }

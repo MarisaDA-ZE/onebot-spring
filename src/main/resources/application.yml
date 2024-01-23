@@ -49,10 +49,8 @@ mybatis-plus:
 
 # 机器人配置
 mrs-bot:
-  bot-id: 2529951593        # 机器人ID
-  target-group: 563445135   # 监控的群聊
-  # 机器人客户端地址
-  client-url: http://192.168.10.101:3000
+  # 默认客户端的地址
+  default-client-url: http://192.168.10.101:3000
   # bert vits2语音模型配置
   bv2:
     client: http://192.168.10.101:8860          # 语音服务地址

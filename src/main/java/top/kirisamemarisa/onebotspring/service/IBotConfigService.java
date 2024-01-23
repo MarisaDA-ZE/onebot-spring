@@ -16,5 +16,15 @@ public interface IBotConfigService extends IService<BotConfig> {
      * @param userId QQ号、Q群号
      * @return 配置信息
      */
-    BotConfig getBotConfigByUserId(String userId);
+    BotConfig getBotConfigByTargetId(String userId);
+
+    /**
+     * 创建一个机器人配置信息
+     *
+     * @param botId    机器人QQ号
+     * @param qid      QQ号、QQ群号
+     * @param chatType 聊天类型
+     * @return .
+     */
+    BotConfig createConfig(String botId, String qid, String chatType);
 }

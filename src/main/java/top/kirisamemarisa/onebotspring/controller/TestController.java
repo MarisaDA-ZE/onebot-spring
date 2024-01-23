@@ -30,11 +30,11 @@ public class TestController {
     @GetMapping("/getConfigById")
     public String test() {
         System.out.println(">>>>>>>>>");
-        BotConfig config = botConfigService.getBotConfigByUserId("1001");
+        BotConfig config = botConfigService.getBotConfigByTargetId("1001");
         System.out.println("数据库配置: "+config);
         redisTemplate.opsForValue().set("test.1001", "测试...", 200, TimeUnit.SECONDS);
         String s = redisTemplate.opsForValue().get("test.1001");
         System.out.println("redis配置: "+s);
-        return config.getContext();
+        return "";
     }
 }
