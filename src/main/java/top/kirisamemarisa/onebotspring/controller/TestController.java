@@ -1,6 +1,7 @@
 package top.kirisamemarisa.onebotspring.controller;
 
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.IBotConfigService;
+import top.kirisamemarisa.onebotspring.task.ScheduleTask;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +26,10 @@ public class TestController {
     @Resource
     private IBotConfigService botConfigService;
 
+    @Autowired
+    private ScheduleTask scheduleTask;
+
+
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
@@ -36,5 +42,11 @@ public class TestController {
         String s = redisTemplate.opsForValue().get("test.1001");
         System.out.println("redis配置: "+s);
         return "";
+    }
+
+    @GetMapping("/cronTest")
+    public void triggerTest(String cron){
+        System.out.println("修改新的cron表达式：" + cron);
+        scheduleTask.setCron(cron);
     }
 }
