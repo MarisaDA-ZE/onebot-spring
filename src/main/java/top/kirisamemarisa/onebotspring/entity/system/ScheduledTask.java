@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @ToString
-public class DynamicSchedule {
+public class ScheduledTask {
     @TableId(type = IdType.AUTO)
     private String id;
     private String taskId;

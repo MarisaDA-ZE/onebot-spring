@@ -2,10 +2,6 @@
 server:
   port: 8047
 
-# 配置Cron表达式，每10秒执行一次
-trigger:
-  cron: 0/1 * * * * ?
-
 spring:
   # MySQL配置
   datasource:

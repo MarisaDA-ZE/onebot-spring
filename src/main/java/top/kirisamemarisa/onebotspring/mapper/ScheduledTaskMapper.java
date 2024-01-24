@@ -2,7 +2,7 @@ package top.kirisamemarisa.onebotspring.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import top.kirisamemarisa.onebotspring.entity.system.DynamicSchedule;
+import top.kirisamemarisa.onebotspring.entity.system.ScheduledTask;
 
 /**
  * @Author: MarisaDAZE
@@ -11,5 +11,5 @@ import top.kirisamemarisa.onebotspring.entity.system.DynamicSchedule;
  */
 
 @Mapper
-public interface DynamicScheduleMapper extends BaseMapper<DynamicSchedule> {
+public interface ScheduledTaskMapper extends BaseMapper<ScheduledTask> {
 }

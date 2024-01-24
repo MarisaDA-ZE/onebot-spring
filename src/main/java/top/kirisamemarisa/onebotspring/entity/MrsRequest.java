@@ -3,7 +3,6 @@ package top.kirisamemarisa.onebotspring.entity;
 import lombok.Data;
 import lombok.ToString;
 import top.kirisamemarisa.onebotspring.enums.DetailType;
-import top.kirisamemarisa.onebotspring.enums.MessageType;
 
 import java.util.List;
 
