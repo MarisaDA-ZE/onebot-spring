@@ -6,6 +6,7 @@ import top.kirisamemarisa.onebotspring.enums.MassageType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: MarisaDAZE
@@ -240,12 +241,22 @@ public class MassageTemplate {
         String url = "https://img1.baidu.com/it/u=2206336034,3499768820&fm=253&fmt=auto&app=138&f=JPEG?w=952&h=500";
         String image = paragraphImageTemplate(url);
         String text2 = paragraphTextTemplate("这是测试消息的第二个段落");
-        System.out.println("at: " + at);
-        System.out.println("text1: " + text1);
-        System.out.println("image: " + image);
-        System.out.println("text2: " + text2);
+//        System.out.println("at: " + at);
+//        System.out.println("text1: " + text1);
+//        System.out.println("image: " + image);
+//        System.out.println("text2: " + text2);
         List<String> massageList = Arrays.asList(at, text1, image, text2);
-        String massage = customGroupTemplate("701339984", massageList);
-        System.out.println("massage: " + massage);
+        String s = massageList.toString();
+        System.out.println(s);
+        List<?> list = JSONObject.parseObject(s, List.class);
+        List<String> strings = new ArrayList<>();
+        list.forEach(e -> {
+            if(e instanceof String) strings.add((String) e);
+        });
+
+        System.out.println(list);
+
+//        String massage = customGroupTemplate("701339984", massageList);
+//        System.out.println("massage: " + massage);
     }
 }

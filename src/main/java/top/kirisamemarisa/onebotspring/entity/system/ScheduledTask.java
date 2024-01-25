@@ -16,13 +16,13 @@ import java.util.Date;
 @ToString
 public class ScheduledTask {
     @TableId(type = IdType.AUTO)
-    private String id;
-    private String taskId;
-    private String cronText;
-    private String remark;
+    private String id;          // id
+    private String userId;      // 用户ID
+    private String cronText;    // cron表达式
+    private String remark;      // 备注
     private Date createTime;
     private String createBy;
-    private String updateTime;
+    private Date updateTime;
     private String updateBy;
 
 

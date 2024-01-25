@@ -10,11 +10,12 @@ import org.springframework.util.ObjectUtils;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.IBotConfigService;
 import top.kirisamemarisa.onebotspring.service.IBotService;
+import top.kirisamemarisa.onebotspring.service.IScheduledTaskService;
 import top.kirisamemarisa.onebotspring.utils.BertUtils;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
 import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
 
-import java.util.Map;
+import java.util.*;
 
 import static top.kirisamemarisa.onebotspring.common.Constant.CONFIG_SUFFIX;
 
@@ -27,6 +28,9 @@ import static top.kirisamemarisa.onebotspring.common.Constant.CONFIG_SUFFIX;
 public class BotServiceImpl implements IBotService {
     @Resource
     private IBotConfigService botConfigService;
+
+    @Resource
+    private IScheduledTaskService scheduledTaskService;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @Value("${mrs-bot.bv2.client}")
@@ -163,6 +167,37 @@ public class BotServiceImpl implements IBotService {
                     System.out.println(context);
                     String template = MassageTemplate.groupImageTemplateSingle(targetGroup, sexURL_AllAge);
                     HttpUtils.post(url, template);
+                } else if (context.contains("创建定时任务")) {
+                    int i = context.indexOf('：');
+                    String str = context.substring(i + 1);
+                    String[] split = str.split("&");
+                    String cron = "";
+                    String template = "";
+                    String remark = "";
+                    for (String s : split) {
+                        String[] array = s.split("=");
+                        System.out.println("array: " + Arrays.toString(array));
+                        if ("cron".equals(array[0])) cron = array[1];
+                        if ("template".equals(array[0])) template = array[1];
+                        if ("remark".equals(array[0])) remark = array[1];
+                    }
+                    String[] templates = template.split(",");
+                    List<String> msgList = new ArrayList<>();
+                    for (String tmp : templates) {
+                        String s = MassageTemplate.paragraphTextTemplate(tmp);
+                        msgList.add(s);
+                    }
+                    String img = "https://img1.baidu.com/it/u=2206336034,3499768820&fm=253&fmt=auto&app=138&f=JPEG?w=952&h=500";
+                    String image = MassageTemplate.paragraphImageTemplate(img);
+                    msgList.add(image);
+                    System.out.println("cron: " + cron);
+                    boolean created = scheduledTaskService.createTextTask(cron, sender, targetGroup, msgList.toString(), remark);
+                    String msg = MassageTemplate.groupTextTemplateSingle(targetGroup, "定时任务创建成功...");
+                    if (created) HttpUtils.post(url, msg);
+                } else if (context.contains("启动定时任务")) {
+                    scheduledTaskService.startTextTaskByUserId(sender);
+                    String msg = MassageTemplate.groupTextTemplateSingle(targetGroup, "定时任务启动成功...");
+                    // HttpUtils.post(url, msg);
                 } else if (context.contains("帮助") || context.contains("help")) {
                     System.out.println("帮助...");
                     String s =
