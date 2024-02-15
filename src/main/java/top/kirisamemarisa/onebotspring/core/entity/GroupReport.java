@@ -25,6 +25,8 @@ public class GroupReport {
 
     // 内容类型
     private String detailType;
+
+    // 原始消息内容
     private String rawMessage;
 
     // 收到事件的机器人QQ号
@@ -40,7 +42,6 @@ public class GroupReport {
     private String type;
 
     // 消息内容
-
     private Massage[] message;
 
     // 消息子类型，如果是好友则是 friend，如果是群临时会话则是 group
@@ -63,6 +64,8 @@ public class GroupReport {
 
     // 事件发生的时间戳
     private long time;
+
+    // 字体
     private int font;
 
     /**
