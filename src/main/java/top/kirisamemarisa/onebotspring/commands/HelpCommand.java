@@ -3,6 +3,7 @@ package top.kirisamemarisa.onebotspring.commands;
 import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
@@ -17,6 +18,7 @@ import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
 
 import static top.kirisamemarisa.onebotspring.common.Constant.CONFIG_SUFFIX;
 
+@Component
 @BotCommand
 public class HelpCommand implements MrsCommand {
 
