@@ -63,6 +63,12 @@ public class GroupReport {
     // 事件发生的时间戳
     private long time;
 
+    /**
+     * JSONObject转GroupReport
+     *
+     * @param data .
+     * @return .
+     */
     public static GroupReport translate(JSONObject data) {
         Set<String> keySet = data.keySet();
         GroupReport groupReport = new GroupReport();

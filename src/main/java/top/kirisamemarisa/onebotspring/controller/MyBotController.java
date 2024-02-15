@@ -22,7 +22,9 @@ public class MyBotController {
     @PostMapping("/")
     public void test(@RequestBody JSONObject data) {
         System.out.println("data: " + data);
-        botService.mainFun(data);
+        GroupReport groupReport = GroupReport.translate(data);
+        commandLoader.execute(groupReport);
+//        botService.mainFun(data);
     }
 
     @PostMapping("/test")
