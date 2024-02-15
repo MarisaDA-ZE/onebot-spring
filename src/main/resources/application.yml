@@ -1,6 +1,6 @@
 # spring 配置
 server:
-  port: 8047
+  port: 8888
 
 spring:
   # MySQL配置
@@ -49,6 +49,8 @@ mybatis-plus:
 
 # 机器人配置
 mrs-bot:
+  # 命令合集包
+  commands: top.kirisamemarisa.onebotspring.commands
   # 默认客户端的地址
   default-client-url: http://192.168.10.101:3000
   # bert vits2语音模型配置
