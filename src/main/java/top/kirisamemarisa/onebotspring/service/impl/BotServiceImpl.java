@@ -219,6 +219,7 @@ public class BotServiceImpl implements IBotService {
                                     ============""";
                     System.out.println(s);
                     String template = MassageTemplate.groupTextTemplateSingle(targetGroup, s);
+                    System.out.println("模板: "+template);
                     HttpUtils.post(url, template);
                 }
 
