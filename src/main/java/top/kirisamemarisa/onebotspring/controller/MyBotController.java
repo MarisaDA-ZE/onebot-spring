@@ -3,8 +3,8 @@ package top.kirisamemarisa.onebotspring.controller;
 import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
-import top.kirisamemarisa.onebotspring.entity.Massage;
-import top.kirisamemarisa.onebotspring.loader.CommandLoader;
+import top.kirisamemarisa.onebotspring.core.entity.GroupReport;
+import top.kirisamemarisa.onebotspring.core.loader.CommandLoader;
 import top.kirisamemarisa.onebotspring.service.IBotService;
 
 
@@ -27,6 +27,7 @@ public class MyBotController {
 
     @PostMapping("/test")
     public void test2(@RequestBody JSONObject data){
-        commandLoader.execute(new Massage());
+        GroupReport groupReport = GroupReport.translate(data);
+        System.out.println(groupReport);
     }
 }

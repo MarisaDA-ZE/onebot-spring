@@ -1,12 +1,11 @@
 package top.kirisamemarisa.onebotspring.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import top.kirisamemarisa.onebotspring.enums.MassageType;
+import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author: MarisaDAZE

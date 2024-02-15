@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotspring.enums;
+package top.kirisamemarisa.onebotspring.core.enums;
 
 /**
  * @Author: MarisaDAZE

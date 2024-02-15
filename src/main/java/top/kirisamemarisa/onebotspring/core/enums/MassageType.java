@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotspring.enums;
+package top.kirisamemarisa.onebotspring.core.enums;
 
 /**
  * @Author: MarisaDAZE
@@ -24,7 +24,8 @@ public enum MassageType {
     FORWARD("forward"),     // 合并转发
     NODE("node"),           // 合并转发节点、合并转发自定义节点
     XML("xml"),     // XML 消息
-    JSON("json");   // JSON 消息
+    JSON("json"),   // JSON 消息
+    UNKNOWN("unknown");// 一些不知道类型的消息统一是返回的这个
 
     private final String messageType;
 
@@ -34,5 +35,23 @@ public enum MassageType {
 
     public String getMessageType() {
         return messageType;
+    }
+
+    /**
+     * 将字符串形式的类型转换为枚举
+     *
+     * @param sType 字符串形式的类型
+     * @return 转换后的结果
+     */
+    public static MassageType translate(String sType) {
+        MassageType[] types = MassageType.values();
+        for (MassageType type : types) {
+            int index = type.ordinal();
+            String val = type.getMessageType();
+            if(val.equals(sType)){
+                return types[index];
+            }
+        }
+        return null;
     }
 }
