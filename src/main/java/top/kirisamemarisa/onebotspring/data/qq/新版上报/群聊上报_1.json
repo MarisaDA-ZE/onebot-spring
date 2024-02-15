@@ -1,0 +1,32 @@
+{
+  "raw_message": "",
+  "detail_type": "group",
+  "self_id": "2529951593",
+  "message_type": "group",
+  "message_id": "7335891042033242281",
+  "type": "message",
+  "message": [
+    {
+      "data": {
+        "text": "123"
+      },
+      "type": "text"
+    }
+  ],
+  "sub_type": "group",
+  "group_id": "701339984",
+  "user_id": "3038488053",
+  "sender": {
+    "user_id": "3038488053",
+    "nickname": "アカメDA☆ZE",
+    "card": "万号之主",
+    "role": "owner"
+  },
+  "self": {
+    "platform": "qq",
+    "user_id": "2529951593"
+  },
+  "post_type": "message",
+  "time": 1708020234,
+  "font": 14
+}

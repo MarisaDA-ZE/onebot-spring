@@ -25,6 +25,7 @@ public class GroupReport {
 
     // 内容类型
     private String detailType;
+    private String rawMessage;
 
     // 收到事件的机器人QQ号
     private String selfId;
@@ -62,6 +63,7 @@ public class GroupReport {
 
     // 事件发生的时间戳
     private long time;
+    private int font;
 
     /**
      * JSONObject转GroupReport
