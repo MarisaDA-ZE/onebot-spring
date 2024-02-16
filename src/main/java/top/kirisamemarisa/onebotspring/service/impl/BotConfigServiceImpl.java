@@ -39,10 +39,11 @@ public class BotConfigServiceImpl extends ServiceImpl<BotConfigMapper, BotConfig
         QueryWrapper<BotConfig> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("USER_ID", userId);
         BotConfig config = baseMapper.selectOne(queryWrapper);
-        System.out.println("数据库中的配置信息: " + config);
         if (ObjectUtils.isEmpty(config)) {
-            System.out.println("未查询到关于" + userId + "的任何信息。");
+            System.err.println("未查询到关于" + userId + "的任何信息。");
             return null;
+        } else {
+            System.out.println("数据库中的配置信息: " + config);
         }
         // 将读取到的配置信息放到redis中。
         redisTemplate.opsForValue().set(userId + CONFIG_SUFFIX, config, TIMEOUT, TimeUnit.SECONDS);

@@ -80,17 +80,19 @@ public class HelpCommand implements MrsCommand {
                         -帮助：@我 帮助
                         -帮助：@我 help
                         ============""";
-        BotConfig config = botUtil.getGroupConfig(groupReport);
-        String clientURL = config.getClientUrl();
-        String url = clientURL + "/send_msg";
         MassageType messageType = groupReport.getMessageType();
+        String url = null;
         String template = null;
         switch (messageType) {
             case PRIVATE -> {
+                BotConfig config = botUtil.getFriendConfig(groupReport);
+                url = config.getClientUrl() + "/send_msg";
                 Sender sender = groupReport.getSender();
                 template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
+                BotConfig config = botUtil.getGroupConfig(groupReport);
+                url = config.getClientUrl() + "/send_msg";
                 String groupId = groupReport.getGroupId();
                 template = MassageTemplate.groupTextTemplateSingle(groupId, s);
             }
