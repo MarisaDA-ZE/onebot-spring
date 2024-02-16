@@ -108,6 +108,27 @@ public class MassageTemplate {
                 "}";
     }
 
+    /**
+     * 快速构建一个对群聊的图片模板
+     *
+     * @param friendId 用户QQ号
+     * @param path     图片地址
+     * @return .
+     */
+    public static String friendImageTemplateSingle(String friendId, String path) {
+        long fid = Long.parseLong(friendId);
+        String res = "{" +
+                "\"message_type\": \"private\"," +
+                "\"user_id\": " + fid + "," +
+                "\"message\": [" +
+                "{" +
+                "\"type\": \"image\"," +
+                "\"data\": {" +
+                "\"file\": \"" + path + "\"" +
+                "}}]}";
+        JSONObject jsonObject = JSONObject.parseObject(res);
+        return jsonObject.toJSONString();
+    }
 
     /**
      * 快速构建一个对群聊的图片模板
@@ -250,7 +271,7 @@ public class MassageTemplate {
         List<?> list = JSONObject.parseObject(s, List.class);
         List<String> strings = new ArrayList<>();
         list.forEach(e -> {
-            if(e instanceof String) strings.add((String) e);
+            if (e instanceof String) strings.add((String) e);
         });
 
         System.out.println(list);

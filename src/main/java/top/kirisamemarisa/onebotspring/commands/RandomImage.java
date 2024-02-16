@@ -2,6 +2,7 @@ package top.kirisamemarisa.onebotspring.commands;
 
 import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
@@ -20,15 +21,18 @@ import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
 
 /**
  * @Author: MarisaDAZE
- * @Description: 查看帮助菜单
+ * @Description: 获取随机图片
  * @Date: 2024/2/16
  */
 @Component
 @BotCommand
-public class HelpCommand implements MrsCommand {
+public class RandomImage implements MrsCommand {
 
     @Resource
     private BotUtil botUtil;
+
+    @Value("${mrs-bot.other-api.sex-image-url}")
+    private String sexURL_AllAge;  // 色图接口（正常向）
 
     @Override
     public boolean trigger(GroupReport groupReport) {
@@ -41,7 +45,8 @@ public class HelpCommand implements MrsCommand {
             MData data = message.getData();
             if (data instanceof MText mText) {
                 String context = StrUtil.trim(mText.getText());
-                if ("帮助".equals(context) || "help".equals(context)) {
+                if ("随机图片".equals(context) || "来点二次元".equals(context) ||
+                    "来点色图".equals(context) || "来点涩图".equals(context)) {
                     return true;
                 }
             }
@@ -51,39 +56,22 @@ public class HelpCommand implements MrsCommand {
 
     @Override
     public void action(GroupReport groupReport) {
-        System.out.println("查看帮助...");
-        String s =
-                """
-                        帮助菜单
-                        ============
-                        @我 <命令><参数>即可使用。
-                        -发骚话（文本）：@我 来点骚话
-                        -发骚话（语音）：@我 来点语音骚话
-                        -复读机（语音）：@我 复读：<内容>
-                        -复读机（文本）：@我 复读文本：<内容>
-                        -随机图片：@我 来点二次元
-                        -开空调：@我 开空调
-                        -闭空调：@我 关空调
-                        -设置温度：@我 设置温度<温度>
-                        -查询温度：@我 查询温度
-                        -帮助：@我 帮助
-                        -帮助：@我 help
-                        ============""";
+        System.out.println("获取随机图片...");
         MassageType messageType = groupReport.getMessageType();
-        String url = null;
-        String template = null;
+        String url = null, template = null;
         switch (messageType) {
             case PRIVATE -> {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
                 url = config.getClientUrl() + "/send_msg";
                 Sender sender = groupReport.getSender();
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+                String userId = sender.getUserId();
+                template = MassageTemplate.friendImageTemplateSingle(userId, sexURL_AllAge);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
                 url = config.getClientUrl() + "/send_msg";
                 String groupId = groupReport.getGroupId();
-                template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                template = MassageTemplate.groupImageTemplateSingle(groupId, sexURL_AllAge);
             }
         }
         // System.out.println("模板: " + template);
