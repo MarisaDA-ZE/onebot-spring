@@ -12,6 +12,7 @@ import top.kirisamemarisa.onebotspring.core.entity.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.MText;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
+import top.kirisamemarisa.onebotspring.core.enums.SubType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
@@ -31,7 +32,7 @@ public class HelpCommand implements MrsCommand {
     @Override
     public boolean trigger(GroupReport groupReport) {
         String selfId = groupReport.getSelfId();
-        String subType = groupReport.getSubType();
+        SubType subType = groupReport.getSubType();
         Massage[] messages = groupReport.getMessage();
 
 

@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.ToString;
 import top.kirisamemarisa.onebotspring.core.entity.massage.Massage;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
-import top.kirisamemarisa.onebotspring.core.enums.DetailType;
-import top.kirisamemarisa.onebotspring.core.enums.ContentType;
+import top.kirisamemarisa.onebotspring.core.enums.*;
+import top.kirisamemarisa.onebotspring.core.util.EnumUtils;
 import top.kirisamemarisa.onebotspring.core.util.MrsUtil;
 
 import java.lang.reflect.Field;
@@ -34,7 +34,7 @@ public class GroupReport {
     private String selfId;
 
     // 消息类型
-    private String messageType;
+    private MassageType messageType;
 
     // 消息ID
     private String messageId;
@@ -46,7 +46,7 @@ public class GroupReport {
     private Massage[] message;
 
     // 消息子类型，如果是好友则是 friend，如果是群临时会话则是 group
-    private String subType;
+    private SubType subType;
 
     // QQ群号
     private String groupId;
@@ -61,7 +61,7 @@ public class GroupReport {
     private Self self;
 
     // 上报类型
-    private String postType;
+    private PostType postType;
 
     // 事件发生的时间戳
     private long time;
@@ -114,6 +114,11 @@ public class GroupReport {
                         Field field = clazz.getDeclaredField(name);
                         field.setAccessible(true);
                         Object val = data.get(key);
+                        // 如果是枚举则调用工具方法进行处理
+                        if (field.getType().isEnum()) {
+                            Class<?> eType = field.getType();
+                            val = EnumUtils.translate((String) val, eType);
+                        }
                         field.set(groupReport, val);
                     } catch (Exception e) {
                         System.out.println("转换失败的字段名: " + name);
