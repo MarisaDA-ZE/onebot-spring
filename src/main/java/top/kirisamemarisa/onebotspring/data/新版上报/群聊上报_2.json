@@ -1,0 +1,35 @@
+{
+  "raw_message": "",
+  "self_id": "2529951593",
+  "message_id": 1708066460077,
+  "message_type": "group",
+  "message": [
+    {
+      "data": {
+        "text": "群聊图文混排：\r"
+      },
+      "type": "text"
+    },
+    {
+      "data": {
+        "file_id": "2630967064",
+        "path": "C:\\Users\\Administrator\\Documents\\Tencent Files\\2529951593\\nt_qq\\nt_data\\Pic\\2024-02\\Ori\\0031a59f28c70a635a95508ae5809483.png",
+        "file": "file://C:\\Users\\Administrator\\Documents\\Tencent Files\\2529951593\\nt_qq\\nt_data\\Pic\\2024-02\\Ori\\0031a59f28c70a635a95508ae5809483.png"
+      },
+      "type": "image"
+    }
+  ],
+  "user_id": "3038488053",
+  "real_id": "7336090492578852347",
+  "sender": {
+    "user_id": "3038488053",
+    "nickname": "",
+    "card": "万号之主",
+    "role": "owner"
+  },
+  "sub_type": "normal",
+  "group_id": "701339984",
+  "post_type": "message",
+  "time": 1708066671,
+  "font": 14
+}

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.ToString;
 import top.kirisamemarisa.onebotspring.core.enums.UserRole;
+import top.kirisamemarisa.onebotspring.core.enums.UserSex;
 
 /**
  * @Author: MarisaDAZE
@@ -18,15 +19,31 @@ public class Sender {
     @JSONField(name = "user_id")
     private String userId;
 
-    // 发送者昵称
+    // 昵称
     @JSONField(name = "nickname")
     private String nickname;
 
-    // 发送者头衔
+    // 群名片
     @JSONField(name = "card")
     private String card;
 
-    // 发送者角色
+    // 性别
+    @JSONField(name = "sex")
+    private UserSex sex;
+
+    // 年龄
+    @JSONField(name = "age")
+    private int age;
+
+    // 地区
+    @JSONField(name = "area")
+    private String area;
+
+    // 专属头衔
+    @JSONField(name = "title")
+    private String title;
+
+    // 角色
     @JSONField(name = "role")
     private UserRole role;
 }

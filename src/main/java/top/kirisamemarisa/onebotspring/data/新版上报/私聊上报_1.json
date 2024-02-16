@@ -1,0 +1,25 @@
+{
+  "user_id": "3038488053",
+  "real_id": "7336090260590311847",
+  "sender": {
+    "user_id": "3038488053",
+    "nickname": "アカメDA☆ZE",
+    "card": ""
+  },
+  "raw_message": "",
+  "sub_type": "friend",
+  "self_id": "2529951593",
+  "message_id": 1708066460074,
+  "message_type": "private",
+  "post_type": "message",
+  "time": 1708066617,
+  "message": [
+    {
+      "data": {
+        "text": "私聊"
+      },
+      "type": "text"
+    }
+  ],
+  "font": 14
+}

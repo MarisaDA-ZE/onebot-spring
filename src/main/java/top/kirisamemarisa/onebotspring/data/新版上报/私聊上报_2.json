@@ -1,0 +1,39 @@
+{
+  "user_id": "3038488053",
+  "real_id": "7336090686157786210",
+  "sender": {
+    "user_id": "3038488053",
+    "nickname": "アカメDA☆ZE",
+    "card": ""
+  },
+  "raw_message": "",
+  "sub_type": "friend",
+  "self_id": "2529951593",
+  "message_id": 1708066460079,
+  "message_type": "private",
+  "post_type": "message",
+  "time": 1708066716,
+  "message": [
+    {
+      "data": {
+        "text": "私聊图文混排\r"
+      },
+      "type": "text"
+    },
+    {
+      "data": {
+        "file_id": "/3038488053-2283846169-C7AFF9690680DCAE204A6AE461AE08BA",
+        "path": "C:\\Users\\Administrator\\Documents\\Tencent Files\\2529951593\\nt_qq\\nt_data\\Pic\\2024-02\\Ori\\c7aff9690680dcae204a6ae461ae08ba.jpg",
+        "file": "file://C:\\Users\\Administrator\\Documents\\Tencent Files\\2529951593\\nt_qq\\nt_data\\Pic\\2024-02\\Ori\\c7aff9690680dcae204a6ae461ae08ba.jpg"
+      },
+      "type": "image"
+    },
+    {
+      "data": {
+        "text": "\r第二段文本"
+      },
+      "type": "text"
+    }
+  ],
+  "font": 14
+}

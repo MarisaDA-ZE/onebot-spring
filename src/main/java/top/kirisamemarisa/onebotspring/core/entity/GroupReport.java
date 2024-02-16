@@ -24,9 +24,6 @@ import java.util.Set;
 @ToString
 public class GroupReport {
 
-    // 内容类型
-    private DetailType detailType;
-
     // 原始消息内容
     private String rawMessage;
 
@@ -37,10 +34,7 @@ public class GroupReport {
     private MassageType messageType;
 
     // 消息ID
-    private String messageId;
-
-    // 消息类型
-    private String type;
+    private long messageId;
 
     // 消息内容
     private Massage[] message;
@@ -54,11 +48,14 @@ public class GroupReport {
     // 发送者QQ号
     private String userId;
 
+    // 匿名信息，如果不是匿名消息则为 null
+    private Anonymous anonymous;
+
+    // 真实ID
+    private String realId;
+
     // 发送人信息
     private Sender sender;
-
-    // 自己账号的信息
-    private Self self;
 
     // 上报类型
     private PostType postType;
@@ -96,22 +93,28 @@ public class GroupReport {
                     }
                     groupReport.setMessage(massages);
                 }
+                // 匿名信息
+                case "anonymous" -> {
+                    JSONObject sd = data.getJSONObject("anonymous");
+                    groupReport.setAnonymous(sd.toJavaObject(Anonymous.class));
+                }
                 // 发送人信息
                 case "sender" -> {
                     JSONObject sd = data.getJSONObject("sender");
                     groupReport.setSender(sd.toJavaObject(Sender.class));
-                }
-                // 自己账号的信息
-                case "self" -> {
-                    JSONObject sf = data.getJSONObject("self");
-                    groupReport.setSelf(sf.toJavaObject(Self.class));
                 }
                 // 其他字段
                 default -> {
                     String name = MrsUtil.toCamelCase(key);
                     try {
                         Class<?> clazz = groupReport.getClass();
-                        Field field = clazz.getDeclaredField(name);
+                        Field field;
+                        try {
+                            field = clazz.getDeclaredField(name);
+                        } catch (NoSuchFieldException e) {
+                            System.err.println("字段不存在: " + name + ",尝试通过key查找。");
+                            field = clazz.getDeclaredField(key);
+                        }
                         field.setAccessible(true);
                         Object val = data.get(key);
                         // 如果是枚举则调用工具方法进行处理
@@ -121,8 +124,8 @@ public class GroupReport {
                         }
                         field.set(groupReport, val);
                     } catch (Exception e) {
-                        System.out.println("转换失败的字段名: " + name);
-                        e.printStackTrace();
+                        System.err.println("出错了,字段为 " + name + ",或者 " + key +
+                                ";该错误不会影响到代码执行,只是有某些字段没有给上值，可能是字段不存在，也可能是类型不兼容");
                     }
                 }
             }
