@@ -32,9 +32,13 @@ public class HelpCommand implements MrsCommand {
 
     @Override
     public boolean trigger(GroupReport groupReport) {
-        boolean isAt = CommandUtil.groupBeAt(groupReport);
-        // 是否是群聊中at的自己
-        if (!isAt) return false;
+        MassageType messageType = groupReport.getMessageType();
+        // 是否是群聊 并且at了自己
+        if (messageType == MassageType.GROUP) {
+            boolean isAt = CommandUtil.groupBeAt(groupReport);
+            if (!isAt) return false;
+        }
+
         Massage[] messages = groupReport.getMessage();
         // 触发
         for (Massage message : messages) {

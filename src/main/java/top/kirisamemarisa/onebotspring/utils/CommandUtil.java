@@ -40,7 +40,7 @@ public class CommandUtil {
                 }
                 return false;
             }).toList();
-            if (ObjectUtils.isEmpty(ats)) return false;
+            return !ObjectUtils.isEmpty(ats);
         }
         return false;
     }

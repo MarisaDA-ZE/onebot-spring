@@ -36,9 +36,13 @@ public class RandomImage implements MrsCommand {
 
     @Override
     public boolean trigger(GroupReport groupReport) {
-        boolean isAt = CommandUtil.groupBeAt(groupReport);
-        // 是否是群聊中at的自己
-        if (!isAt) return false;
+        MassageType messageType = groupReport.getMessageType();
+        // 是否是群聊 并且at了自己
+        if (messageType == MassageType.GROUP) {
+            boolean isAt = CommandUtil.groupBeAt(groupReport);
+            if (!isAt) return false;
+        }
+
         Massage[] messages = groupReport.getMessage();
         // 触发
         for (Massage message : messages) {
@@ -46,7 +50,7 @@ public class RandomImage implements MrsCommand {
             if (data instanceof MText mText) {
                 String context = StrUtil.trim(mText.getText());
                 if ("随机图片".equals(context) || "来点二次元".equals(context) ||
-                    "来点色图".equals(context) || "来点涩图".equals(context)) {
+                        "来点色图".equals(context) || "来点涩图".equals(context)) {
                     return true;
                 }
             }
