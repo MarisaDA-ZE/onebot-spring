@@ -15,7 +15,7 @@ import java.util.List;
 public class MassageTemplate {
 
     /**
-     * 快速构建一个对群聊的单一段落的模板
+     * 快速构建一个对用户的单一段落的模板
      *
      * @param friendId QQ号
      * @param text     内容

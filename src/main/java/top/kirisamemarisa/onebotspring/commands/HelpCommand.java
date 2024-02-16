@@ -7,12 +7,13 @@ import org.springframework.util.ObjectUtils;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
 import top.kirisamemarisa.onebotspring.core.entity.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.Sender;
 import top.kirisamemarisa.onebotspring.core.entity.massage.Massage;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.MText;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
-import top.kirisamemarisa.onebotspring.core.enums.SubType;
+import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
@@ -32,20 +33,21 @@ public class HelpCommand implements MrsCommand {
     @Override
     public boolean trigger(GroupReport groupReport) {
         String selfId = groupReport.getSelfId();
-        SubType subType = groupReport.getSubType();
+        MassageType messageType = groupReport.getMessageType();
         Massage[] messages = groupReport.getMessage();
-
-
-
-        List<?> ats = Arrays.stream(messages).filter(msg -> {
-            if (msg.getType() == ContentType.AT) {
-                MAt at = (MAt) msg.getData();
-                String target = at.getMention();
-                return (selfId + "").equals(target);
-            }
-            return false;
-        }).toList();
-        if (ObjectUtils.isEmpty(ats)) return false;
+        // 如果是群聊，则需要被at才做出反应
+        if (messageType == MassageType.GROUP) {
+            List<?> ats = Arrays.stream(messages).filter(msg -> {
+                if (msg.getType() == ContentType.AT) {
+                    MAt at = (MAt) msg.getData();
+                    String target = at.getMention();
+                    return (selfId + "").equals(target);
+                }
+                return false;
+            }).toList();
+            if (ObjectUtils.isEmpty(ats)) return false;
+        }
+        // 触发
         for (Massage message : messages) {
             MData data = message.getData();
             if (data instanceof MText mText) {
@@ -81,8 +83,19 @@ public class HelpCommand implements MrsCommand {
         BotConfig config = botUtil.getGroupConfig(groupReport);
         String clientURL = config.getClientUrl();
         String url = clientURL + "/send_msg";
-        String template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), s);
-        System.out.println("模板: " + template);
+        MassageType messageType = groupReport.getMessageType();
+        String template = null;
+        switch (messageType) {
+            case PRIVATE -> {
+                Sender sender = groupReport.getSender();
+                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+            }
+            case GROUP -> {
+                String groupId = groupReport.getGroupId();
+                template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+            }
+        }
+        // System.out.println("模板: " + template);
         HttpUtils.post(url, template);
     }
 }
