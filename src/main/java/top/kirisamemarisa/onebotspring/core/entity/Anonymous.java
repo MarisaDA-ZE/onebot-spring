@@ -3,7 +3,6 @@ package top.kirisamemarisa.onebotspring.core.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.ToString;
-import top.kirisamemarisa.onebotspring.core.enums.PlatformType;
 
 /**
  * @Author: MarisaDAZE

@@ -2,7 +2,7 @@ package top.kirisamemarisa.onebotspring.core.util;
 
 /**
  * @Author: MarisaDAZE
- * @Description: EnumUtils.描述
+ * @Description: 枚举工具类
  * @Date: 2024/2/16
  */
 public class EnumUtils {

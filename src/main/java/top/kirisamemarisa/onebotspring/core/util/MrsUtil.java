@@ -2,7 +2,7 @@ package top.kirisamemarisa.onebotspring.core.util;
 
 /**
  * @Author: MarisaDAZE
- * @Description: MrsUtil.描述
+ * @Description: 工具类
  * @Date: 2024/2/16
  */
 public class MrsUtil {

@@ -24,7 +24,7 @@ public class BotUtil {
     private RedisTemplate<String, Object> redisTemplate;
 
     /**
-     * 获取机器人在该群的配置信息
+     * 获取机器人对该群的配置信息
      *
      * @param groupReport 消息对象
      * @return 配置信息
@@ -44,7 +44,7 @@ public class BotUtil {
     }
 
     /**
-     * 获取机器人在该群的配置信息
+     * 获取机器人对该用户的配置信息
      *
      * @param groupReport 消息对象
      * @return 配置信息
