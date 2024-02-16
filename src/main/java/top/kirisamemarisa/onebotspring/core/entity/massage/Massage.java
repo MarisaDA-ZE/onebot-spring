@@ -3,7 +3,7 @@ package top.kirisamemarisa.onebotspring.core.entity.massage;
 import lombok.Data;
 import lombok.ToString;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
-import top.kirisamemarisa.onebotspring.core.enums.MassageType;
+import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 
 /**
  * @Author: MarisaDAZE
@@ -16,6 +16,6 @@ public class Massage {
 
     private MData data;
 
-    private MassageType type;
+    private ContentType type;
 
 }

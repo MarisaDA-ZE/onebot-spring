@@ -4,7 +4,7 @@ import top.kirisamemarisa.onebotspring.core.entity.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.MImage;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.MText;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.MUnknown;
-import top.kirisamemarisa.onebotspring.core.enums.MassageType;
+import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.util.MrsUtil;
 
 import java.lang.reflect.Constructor;
@@ -29,7 +29,7 @@ public abstract class MData {
         String t = (String) map.get("type");
         LinkedHashMap<?, ?> d = (LinkedHashMap<?, ?>) map.get("data");
         try {
-            MassageType type = MassageType.translate(t);
+            ContentType type = ContentType.translate(t);
             if (type != null) {
                 switch (type) {
                     // at消息
@@ -53,7 +53,7 @@ public abstract class MData {
             }
             return null;
         } catch (Exception e) {
-            System.out.println("消息内容转换出错了！");
+            System.err.println("消息内容转换出错了！");
             e.printStackTrace();
             return null;
         }

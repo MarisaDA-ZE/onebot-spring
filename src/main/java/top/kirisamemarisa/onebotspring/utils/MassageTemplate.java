@@ -1,7 +1,7 @@
 package top.kirisamemarisa.onebotspring.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import top.kirisamemarisa.onebotspring.core.enums.MassageType;
+import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -161,7 +161,7 @@ public class MassageTemplate {
     }
 
 
-    public static String paragraphTemplate(String content, MassageType type) {
+    public static String paragraphTemplate(String content, ContentType type) {
         String res = "{" +
                 "\"type\": \"image\"," +
                 "\"data\": {" +

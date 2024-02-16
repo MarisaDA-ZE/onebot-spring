@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.ToString;
 import top.kirisamemarisa.onebotspring.core.entity.massage.Massage;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
-import top.kirisamemarisa.onebotspring.core.enums.MassageType;
+import top.kirisamemarisa.onebotspring.core.enums.DetailType;
+import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.util.MrsUtil;
 
 import java.lang.reflect.Field;
@@ -24,7 +25,7 @@ import java.util.Set;
 public class GroupReport {
 
     // 内容类型
-    private String detailType;
+    private DetailType detailType;
 
     // 原始消息内容
     private String rawMessage;
@@ -87,7 +88,7 @@ public class GroupReport {
                         Massage massage = new Massage();
                         Map<?, ?> msg = (LinkedHashMap<?, ?>) array.get(k);
                         String t = (String) msg.get("type");
-                        MassageType type = MassageType.translate(t);
+                        ContentType type = ContentType.translate(t);
                         massage.setType(type);
                         MData md = MData.translate(msg);
                         massage.setData(md);

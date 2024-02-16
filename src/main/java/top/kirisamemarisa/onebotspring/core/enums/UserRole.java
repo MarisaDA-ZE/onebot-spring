@@ -1,12 +1,8 @@
 package top.kirisamemarisa.onebotspring.core.enums;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * @Author: MarisaDAZE
- * @Description: UserRole.描述
+ * @Description: 用户角色的枚举
  * @Date: 2024/1/20
  */
 public enum UserRole {
@@ -27,25 +23,21 @@ public enum UserRole {
         return roleText;
     }
 
-    public static Set<String> getTextKeySet() {
-        UserRole[] values = UserRole.values();
-        return Arrays.stream(values).map(e -> e.roleText).collect(Collectors.toSet());
-    }
-
-    public static UserRole getRoleText(String text) {
-        switch (text) {
-            case "owner" -> {
-                return UserRole.OWNER;
-            }
-            case "admin" -> {
-                return UserRole.ADMIN;
-            }
-            case "member" -> {
-                return UserRole.MEMBER;
-            }
-            default -> {
-                return UserRole.UNKNOWN;
+    /**
+     * 将字符串形式的类型转换为枚举
+     *
+     * @param sType 字符串形式的类型
+     * @return 转换后的结果
+     */
+    public static UserRole translate(String sType) {
+        UserRole[] types = UserRole.values();
+        for (UserRole type : types) {
+            int index = type.ordinal();
+            String val = type.getRoleText();
+            if (val.equals(sType)) {
+                return types[index];
             }
         }
+        return null;
     }
 }

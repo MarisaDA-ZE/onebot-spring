@@ -2,10 +2,10 @@ package top.kirisamemarisa.onebotspring.core.enums;
 
 /**
  * @Author: MarisaDAZE
- * @Description: MessageType.描述
+ * @Description: 消息内容的类型
  * @Date: 2024/1/20
  */
-public enum MassageType {
+public enum ContentType {
     TEXT("text"),   // 纯文本
     FACE("face"),   // QQ表情
     IMAGE("image"), // 图片
@@ -27,14 +27,14 @@ public enum MassageType {
     JSON("json"),   // JSON 消息
     UNKNOWN("unknown");// 一些不知道类型的消息统一是返回的这个
 
-    private final String messageType;
+    private final String contentType;
 
-    MassageType(String messageType) {
-        this.messageType = messageType;
+    ContentType(String contentType) {
+        this.contentType = contentType;
     }
 
-    public String getMessageType() {
-        return messageType;
+    public String getContentType() {
+        return contentType;
     }
 
     /**
@@ -43,12 +43,12 @@ public enum MassageType {
      * @param sType 字符串形式的类型
      * @return 转换后的结果
      */
-    public static MassageType translate(String sType) {
-        MassageType[] types = MassageType.values();
-        for (MassageType type : types) {
+    public static ContentType translate(String sType) {
+        ContentType[] types = ContentType.values();
+        for (ContentType type : types) {
             int index = type.ordinal();
-            String val = type.getMessageType();
-            if(val.equals(sType)){
+            String val = type.getContentType();
+            if (val.equals(sType)) {
                 return types[index];
             }
         }
