@@ -11,7 +11,12 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration>
+        <fileset id="fileset" name="MybatisPlusConfig" removed="false">
+          <dependency>spring_boot_top.kirisamemarisa.onebotspring.OnebotSpringApplication</dependency>
+          <file>file://$MODULE_DIR$/src/main/java/top/kirisamemarisa/onebotspring/config/MybatisPlusConfig.java</file>
+        </fileset>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
