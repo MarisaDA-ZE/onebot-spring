@@ -1,16 +1,21 @@
 package top.kirisamemarisa.onebotspring.core.entity;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.beans.BeanUtils;
 import top.kirisamemarisa.onebotspring.core.entity.massage.Massage;
+import top.kirisamemarisa.onebotspring.core.entity.massage.data.MReply;
+import top.kirisamemarisa.onebotspring.core.entity.massage.data.MUnknown;
 import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
 import top.kirisamemarisa.onebotspring.core.enums.*;
 import top.kirisamemarisa.onebotspring.core.util.EnumUtils;
 import top.kirisamemarisa.onebotspring.core.util.MrsUtil;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -83,12 +88,20 @@ public class GroupReport {
                     Massage[] massages = new Massage[array.size()];
                     for (int k = 0; k < array.size(); k++) {
                         Massage massage = new Massage();
-                        Map<?, ?> msg = (LinkedHashMap<?, ?>) array.get(k);
-                        String t = (String) msg.get("type");
-                        ContentType type = ContentType.translate(t);
+                        ContentType type = ContentType.UNKNOWN;
+                        MData mData = null;
+                        Object o = array.get(k);
+                        if (o instanceof JSONObject) {
+                            JSONObject msg = array.getJSONObject(k);
+                            type = ContentType.translate((String) msg.get("type"));
+                            mData = MData.translate(msg);
+                        } else if (o instanceof LinkedHashMap) {
+                            Map<?, ?> msg = (LinkedHashMap<?, ?>) array.get(k);
+                            type = ContentType.translate((String) msg.get("type"));
+                            mData = MData.translate(msg);
+                        }
                         massage.setType(type);
-                        MData md = MData.translate(msg);
-                        massage.setData(md);
+                        massage.setData(mData);
                         massages[k] = massage;
                     }
                     groupReport.setMessage(massages);
@@ -125,7 +138,8 @@ public class GroupReport {
                         field.set(groupReport, val);
                     } catch (Exception e) {
                         System.err.println("出错了,字段为 " + name + ",或者 " + key +
-                                ";该错误不会影响到代码执行,只是有某些字段没有给上值，可能是字段不存在，也可能是类型不兼容");
+                                ";该错误不会影响到代码执行,只是有某些字段没有值，可能是字段不存在，" +
+                                "也可能是类型不兼容，请开发者自行排查。");
                     }
                 }
             }

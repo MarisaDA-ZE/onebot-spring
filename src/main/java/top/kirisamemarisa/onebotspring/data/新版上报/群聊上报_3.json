@@ -1,0 +1,33 @@
+{
+  "raw_message": "",
+  "self_id": "2529951593",
+  "message_id": 1708242528640,
+  "message_type": "group",
+  "message": [
+    {
+      "data": {
+        "id": 1708242528639
+      },
+      "type": "reply"
+    },
+    {
+      "data": {
+        "text": "绑定群老婆"
+      },
+      "type": "text"
+    }
+  ],
+  "user_id": "3038488053",
+  "real_id": "7337931843302597998",
+  "sender": {
+    "user_id": "3038488053",
+    "nickname": "",
+    "card": "万号之主",
+    "role": "owner"
+  },
+  "sub_type": "normal",
+  "group_id": "701339984",
+  "post_type": "message",
+  "time": 1708495394,
+  "font": 14
+}
