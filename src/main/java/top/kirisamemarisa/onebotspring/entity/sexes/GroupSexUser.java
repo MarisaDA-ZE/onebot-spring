@@ -20,6 +20,7 @@ public class GroupSexUser {
     private String groupId;          // 群号
     private String userId;          // 用户ID(保留字段，计划是用来关联user表)
     private String userQq;          // 用户QQ号
+    private int remainingEnergy;    // 当前剩余精力
     private int redFlowerCount;     // 红色花朵数
     private int blueFlowerCount;    // 蓝色花朵数
     private int energyCount;        // 精力药剂数
