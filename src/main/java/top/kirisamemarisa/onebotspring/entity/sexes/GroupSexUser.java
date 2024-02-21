@@ -17,6 +17,7 @@ import java.util.Date;
 public class GroupSexUser {
     @TableId(type = IdType.AUTO)
     private String id;              // 主键ID
+    private String groupId;          // 群号
     private String userId;          // 用户ID(保留字段，计划是用来关联user表)
     private String userQq;          // 用户QQ号
     private int redFlowerCount;     // 红色花朵数

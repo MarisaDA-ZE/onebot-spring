@@ -118,6 +118,8 @@ public class BindGroupWife implements MrsCommand {
 
                     GroupMemberDetail data = member.getData();
                     String nickName = data.getNickName();
+                    String groupId = String.valueOf(data.getGroupId());
+                    String memberId = String.valueOf(data.getUserId());
                     Sender sender = groupReport.getSender();
 
                     QueryWrapper<GroupSexUser> sexUserWrapper = new QueryWrapper<>();
@@ -129,12 +131,12 @@ public class BindGroupWife implements MrsCommand {
                         groupSexUser = new GroupSexUser();
                         groupSexUser.setId(SnowflakeUtil.nextId());
                         groupSexUser.setUserQq(sender.getUserId());
+                        groupSexUser.setGroupId(groupId);
                         groupSexUser.setCreateBy("system");
                         groupSexUser.setCreateTime(new Date());
                     }
 
-                    String groupId = String.valueOf(data.getGroupId());
-                    String memberId = String.valueOf(data.getUserId());
+
                     QueryWrapper<GroupWife> wifeWrapper = new QueryWrapper<>();
                     wifeWrapper.eq("group_id", groupId);
                     wifeWrapper.eq("user_qq", sender.getUserId());
@@ -149,6 +151,7 @@ public class BindGroupWife implements MrsCommand {
                         groupWife.setUserId(groupSexUser.getId());
                         groupWife.setUserQq(groupSexUser.getUserQq());
                         groupWife.setWifeQq(target);
+                        groupWife.setNickName(data.getNickName());
                         groupWife.setCreateBy("system");
                         groupWife.setCreateTime(new Date());
                     } else {
@@ -167,6 +170,7 @@ public class BindGroupWife implements MrsCommand {
                     if (ObjectUtils.isEmpty(groupSexWife)) {
                         groupSexWife = new GroupSexWife();
                         groupSexWife.setId(SnowflakeUtil.nextId());
+                        groupSexWife.setGroupId(groupId);
                         groupSexWife.setUserId(groupSexUser.getId());
                         groupSexWife.setUserQq(groupSexUser.getUserQq());
                         groupSexWife.setWifeId(groupWife.getId());

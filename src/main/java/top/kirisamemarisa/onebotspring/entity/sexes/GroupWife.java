@@ -22,6 +22,7 @@ public class GroupWife {
     private String userQq; // 用户QQ号
     private String wifeId; // 群老婆ID（保留字段，暂时没用）
     private String wifeQq; // 群老婆QQ号
+    private String nickName; // 群老婆昵称
     private int shootOutsideCount; // 外设次数
     private int shootMouthCount; // 口设次数
     private int shootInsideCount; // 内设次数

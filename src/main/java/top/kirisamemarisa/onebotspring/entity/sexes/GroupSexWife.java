@@ -17,6 +17,7 @@ import java.util.Date;
 public class GroupSexWife {
     @TableId(type = IdType.AUTO)
     private String id;          // 主键ID
+    private String groupId;      // 群号
     private String userId;      // 用户ID
     private String userQq;      // 用户QQ号
     private String wifeId;      // 群老婆ID
