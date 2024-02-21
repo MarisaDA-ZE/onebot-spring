@@ -114,7 +114,6 @@ public class BindGroupWife implements MrsCommand {
                 GroupMemberInfo member = JSONObject.parseObject(res, GroupMemberInfo.class);
                 // 目标信息存在
                 if (member != null) {
-
                     GroupMemberDetail data = member.getData();
                     String nickName = data.getNickName();
                     String groupId = String.valueOf(data.getGroupId());
@@ -122,9 +121,11 @@ public class BindGroupWife implements MrsCommand {
                     Sender sender = groupReport.getSender();
 
                     QueryWrapper<GroupSexUser> sexUserWrapper = new QueryWrapper<>();
-                    sexUserWrapper.eq("user_qq", target);
+                    sexUserWrapper.eq("group_id", groupId);
+                    sexUserWrapper.eq("user_qq", sender.getUserId());
                     GroupSexUser groupSexUser = groupSexUserService.getOne(sexUserWrapper);
                     GroupSexUser groupSexUserDb = groupSexUser;
+                    System.out.println("涩涩用户：" + groupSexUser);
                     // 数据库中不存在，则新建涩涩用户
                     if (ObjectUtils.isEmpty(groupSexUser)) {
                         groupSexUser = new GroupSexUser();
@@ -134,7 +135,6 @@ public class BindGroupWife implements MrsCommand {
                         groupSexUser.setCreateBy("system");
                         groupSexUser.setCreateTime(new Date());
                     }
-
 
                     QueryWrapper<GroupWife> wifeWrapper = new QueryWrapper<>();
                     wifeWrapper.eq("group_id", groupId);
@@ -161,6 +161,7 @@ public class BindGroupWife implements MrsCommand {
                     }
 
                     QueryWrapper<GroupSexWife> sexWifeWrapper = new QueryWrapper<>();
+                    sexWifeWrapper.eq("group_id", groupId);
                     sexWifeWrapper.eq("user_qq", sender.getUserId());
                     sexWifeWrapper.eq("wife_qq", memberId);
                     GroupSexWife groupSexWife = groupSexWifeService.getOne(sexWifeWrapper);
