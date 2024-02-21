@@ -1,17 +1,13 @@
 package top.kirisamemarisa.onebotspring.commands;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
-import top.kirisamemarisa.onebotspring.core.entity.groupmemberinfo.GroupMemberDetail;
-import top.kirisamemarisa.onebotspring.core.entity.groupmemberinfo.GroupMemberInfo;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
@@ -21,19 +17,15 @@ import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
-import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexUser;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupWife;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
 import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
-import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -51,9 +43,6 @@ public class QueryGroupWifeCount implements MrsCommand {
 
     @Resource
     private IGroupWifeService groupWifeService;
-
-    @Resource
-    private IGroupSexUserService groupSexUserService;
 
     @Resource
     private IGroupSexWifeService groupSexWifeService;
@@ -126,15 +115,15 @@ public class QueryGroupWifeCount implements MrsCommand {
                     String nickName = wife.getNickName();
                     String qq = wife.getWifeQq();
                     int i = qqNums.indexOf(qq);
-                    String pNickName = "";
-                    if(i != -1){
+                    String pNickName;
+                    if (i != -1) {
                         GroupSexWife groupSexWife = sexWifeList.get(i);
-                         pNickName = groupSexWife.getNickName();
-                         context.append(pNickName)
-                                 .append("（")
-                                 .append(nickName)
-                                 .append("）");
-                    }else {
+                        pNickName = groupSexWife.getNickName();
+                        context.append(pNickName)
+                                .append("（")
+                                .append(nickName)
+                                .append("）");
+                    } else {
                         context.append(nickName);
                     }
                     context.append("、");
