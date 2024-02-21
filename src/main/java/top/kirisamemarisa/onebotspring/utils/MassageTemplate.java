@@ -15,6 +15,27 @@ import java.util.List;
 public class MassageTemplate {
 
     /**
+     * 获取群成员信息的模板
+     *
+     * @param groupId 群号
+     * @param userId  目标QQ
+     * @return 模板
+     */
+    public static String getGroupMemberInfo(String groupId, String userId) {
+        String template =
+                """
+                        {
+                            "group_id": "%s",
+                            "user_id": "%s",
+                            "no_cache": false,
+                        }
+                        """;
+        template = String.format(template, groupId, userId);
+        JSONObject jsonObject = JSONObject.parseObject(template);
+        return jsonObject.toJSONString();
+    }
+
+    /**
      * 快速构建一个对用户的单一段落的模板
      *
      * @param friendId QQ号

@@ -83,7 +83,6 @@ public abstract class MData {
     private static MData translateByType(String t, Object d) {
         try {
             ContentType type = ContentType.translate(t);
-            System.out.println(type);
             if (type != null) {
                 switch (type) {
                     // at消息

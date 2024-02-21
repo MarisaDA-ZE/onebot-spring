@@ -61,11 +61,9 @@ public class BindGroupWife implements MrsCommand {
 
     @Override
     public void action(GroupReport groupReport) {
-        System.out.println("查看帮助...");
         MassageType messageType = groupReport.getMessageType(); // 是群聊消息
         String url = "";
         String template = "";
-
         switch (messageType) {
             case PRIVATE -> {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
@@ -77,8 +75,6 @@ public class BindGroupWife implements MrsCommand {
             case GROUP -> {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
                 url = config.getClientUrl() + "/send_msg";
-                Sender sender = groupReport.getSender();
-
                 Massage[] messages = groupReport.getMessage();
                 String target = "";
                 for (Massage message : messages) {
@@ -89,6 +85,10 @@ public class BindGroupWife implements MrsCommand {
                     }
                 }
                 System.out.println("绑定: " + target);
+                String s = MassageTemplate.getGroupMemberInfo(groupReport.getGroupId(), target);
+                String res = HttpUtils.post(config.getClientUrl() + "/get_group_member_info", s);
+                System.out.println(res);
+
                 String content = "绑定成功！";
                 template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), content);
             }
