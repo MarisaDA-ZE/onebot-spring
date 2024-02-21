@@ -15,6 +15,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Position {
-    private float top;  // 距离顶部
-    private float left; // 左侧距离
+    private float x;    // 左侧距离
+    private float y;    // 顶部距离
+    private float w;    // 长度
+    private float h;    // 宽度
 }
