@@ -1,12 +1,9 @@
 package top.kirisamemarisa.onebotspring.utils;
 
-import cn.hutool.core.util.StrUtil;
 import org.springframework.util.ObjectUtils;
-import top.kirisamemarisa.onebotspring.core.entity.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.massage.Massage;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.MAt;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.MText;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 

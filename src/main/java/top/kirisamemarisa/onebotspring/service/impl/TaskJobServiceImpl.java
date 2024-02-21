@@ -22,7 +22,7 @@ public class TaskJobServiceImpl extends ServiceImpl<TaskJobMapper, TaskJob> impl
 
     @Override
     public Boolean createTaskJob(String taskId, String userId, String groupId, String taskType, String chatType, String template) {
-        String id = SnowflakeUtil.nextIdOne();
+        String id = SnowflakeUtil.nextId();
         TaskJob taskJob = new TaskJob();
         taskJob.setId(id);
         taskJob.setTaskId(taskId);

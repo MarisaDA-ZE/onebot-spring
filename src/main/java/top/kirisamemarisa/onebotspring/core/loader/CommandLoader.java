@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
-import top.kirisamemarisa.onebotspring.core.entity.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;

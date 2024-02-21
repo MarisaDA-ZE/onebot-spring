@@ -1,4 +1,4 @@
-package top.kirisamemarisa.onebotspring.core.entity;
+package top.kirisamemarisa.onebotspring.core.entity.groupreport;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;

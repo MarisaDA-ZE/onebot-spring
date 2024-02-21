@@ -1,6 +1,6 @@
 package top.kirisamemarisa.onebotspring.core.command;
 
-import top.kirisamemarisa.onebotspring.core.entity.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 
 /**
  * 命令对象

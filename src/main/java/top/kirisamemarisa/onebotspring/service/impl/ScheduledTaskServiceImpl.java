@@ -50,7 +50,7 @@ public class ScheduledTaskServiceImpl extends ServiceImpl<ScheduledTaskMapper, S
     @Override
     public boolean createTextTask(String cron, String userId, String groupId, String template, String remark) {
         ScheduledTask scheduledTask = new ScheduledTask();
-        String taskId = SnowflakeUtil.nextIdOne();
+        String taskId = SnowflakeUtil.nextId();
         scheduledTask.setId(taskId);
         scheduledTask.setUserId(userId);
         scheduledTask.setCronText(cron);

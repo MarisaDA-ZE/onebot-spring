@@ -6,8 +6,8 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import top.kirisamemarisa.onebotspring.core.entity.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.Sender;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.IBotConfigService;
 

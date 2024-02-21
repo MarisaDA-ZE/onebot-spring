@@ -1,8 +1,8 @@
-package top.kirisamemarisa.onebotspring.core.entity.massage;
+package top.kirisamemarisa.onebotspring.core.entity.groupreport.massage;
 
 import lombok.Data;
 import lombok.ToString;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 
 /**

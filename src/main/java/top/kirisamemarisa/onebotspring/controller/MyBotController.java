@@ -5,12 +5,10 @@ import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
-import top.kirisamemarisa.onebotspring.core.entity.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.Sender;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.loader.CommandLoader;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 

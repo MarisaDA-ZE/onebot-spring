@@ -1,8 +1,8 @@
-package top.kirisamemarisa.onebotspring.core.entity.massage.data.base;
+package top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.util.ObjectUtils;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.*;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.*;
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.util.MrsUtil;
 

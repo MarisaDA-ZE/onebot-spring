@@ -1,21 +1,16 @@
-package top.kirisamemarisa.onebotspring.core.entity;
+package top.kirisamemarisa.onebotspring.core.entity.groupreport;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.beans.BeanUtils;
-import top.kirisamemarisa.onebotspring.core.entity.massage.Massage;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.MReply;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.MUnknown;
-import top.kirisamemarisa.onebotspring.core.entity.massage.data.base.MData;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
 import top.kirisamemarisa.onebotspring.core.enums.*;
 import top.kirisamemarisa.onebotspring.core.util.EnumUtils;
 import top.kirisamemarisa.onebotspring.core.util.MrsUtil;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
