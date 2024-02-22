@@ -3,18 +3,18 @@ package top.kirisamemarisa.onebotspring.commands;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MText;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
-import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
@@ -40,6 +40,9 @@ public class QueryGroupWifeCount implements MrsCommand {
 
     @Resource
     private BotUtil botUtil;
+
+    @Value("${mrs-bot.default-client-url}")
+    private String defaultClientURL;
 
     @Resource
     private IGroupWifeService groupWifeService;
@@ -85,51 +88,57 @@ public class QueryGroupWifeCount implements MrsCommand {
                 template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), content);
             }
             case GROUP -> {
-                BotConfig config = botUtil.getFriendConfig(groupReport);
-                url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
-                Massage[] messages = groupReport.getMessage();
                 String groupId = groupReport.getGroupId();
                 Sender sender = groupReport.getSender();
-                String target = "";
-                for (Massage message : messages) {
-                    if (message.getType() == ContentType.AT) {
-                        MAt at = (MAt) message.getData();
-                        target = at.getMention();
-                        break;
-                    }
+                BotConfig config = botUtil.getFriendConfig(groupReport);
+                // 配置文件不存在
+                if (ObjectUtils.isEmpty(config)) {
+                    String s = "当前账号暂未注册，请先注册后使用哦~";
+                    template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), s);
+                    url = defaultClientURL + ClientApi.SEND_MSG.getApiURL();
+                    HttpUtils.post(url, template);
+                    return;
                 }
-                System.out.println("目标: " + target);
+                url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
+
+                // 查询关联关系
                 QueryWrapper<GroupSexWife> sexWifeWrapper = new QueryWrapper<>();
                 sexWifeWrapper.eq("group_id", groupId);
                 sexWifeWrapper.eq("user_qq", sender.getUserId());
                 List<GroupSexWife> sexWifeList = groupSexWifeService.list(sexWifeWrapper);
                 List<String> qqNums = sexWifeList.stream().map(GroupSexWife::getWifeQq).toList();
 
+                // 群老婆列表
                 QueryWrapper<GroupWife> wifeWrapper = new QueryWrapper<>();
                 wifeWrapper.eq("group_id", groupId);
                 wifeWrapper.eq("user_qq", sender.getUserId());
                 List<GroupWife> wifeList = groupWifeService.list(wifeWrapper);
-                String s = "您在本群共有 " + wifeList.size() + " 位老婆，她们分别是：";
-                StringBuilder context = new StringBuilder(s);
-                wifeList.forEach(wife -> {
-                    String nickName = wife.getNickName();
-                    String qq = wife.getWifeQq();
-                    int i = qqNums.indexOf(qq);
-                    String pNickName;
-                    if (i != -1) {
-                        GroupSexWife groupSexWife = sexWifeList.get(i);
-                        pNickName = groupSexWife.getNickName();
-                        context.append(pNickName)
-                                .append("（")
-                                .append(nickName)
-                                .append("）");
-                    } else {
-                        context.append(nickName);
-                    }
-                    context.append("、");
-                });
-                context.delete(context.length() - 1, context.length());
-                template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), context.toString());
+                String templateContext;
+                if (wifeList.size() > 0) {
+                    StringBuilder context = new StringBuilder("您在本群共有 " + wifeList.size() + " 位老婆，她们分别是：");
+                    wifeList.forEach(wife -> {
+                        String nickName = wife.getNickName();
+                        String qq = wife.getWifeQq();
+                        int i = qqNums.indexOf(qq);
+                        String pNickName;
+                        if (i != -1) {
+                            GroupSexWife groupSexWife = sexWifeList.get(i);
+                            pNickName = groupSexWife.getNickName();
+                            context.append(pNickName)
+                                    .append("（")
+                                    .append(nickName)
+                                    .append("）");
+                        } else {
+                            context.append(nickName);
+                        }
+                        context.append("、");
+                    });
+                    context.delete(context.length() - 1, context.length());
+                    templateContext = context.toString();
+                } else {
+                    templateContext = "您在本群还没有群老婆，快点把群友们娶回家吧！";
+                }
+                template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), templateContext);
             }
         }
         HttpUtils.post(url, template);
