@@ -5,6 +5,7 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
+import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
@@ -66,14 +67,14 @@ public class RandomImage implements MrsCommand {
         switch (messageType) {
             case PRIVATE -> {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
-                url = config.getClientUrl() + "/send_msg";
+                url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 String userId = sender.getUserId();
                 template = MassageTemplate.friendImageTemplateSingle(userId, sexURL_AllAge);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
-                url = config.getClientUrl() + "/send_msg";
+                url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 String groupId = groupReport.getGroupId();
                 template = MassageTemplate.groupImageTemplateSingle(groupId, sexURL_AllAge);
             }

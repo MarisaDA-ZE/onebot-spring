@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
+import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
@@ -63,7 +64,7 @@ public class HelpCommand implements MrsCommand {
                         @我 <命令><参数>即可使用。
                         -绑定群老婆：[回复ta的消息] @<目标> 绑定群老婆
                         -群老婆人数：@我 查询群老婆人数
-                        -查自身精力：@我 查询自身精力
+                        -查自身精力：@我 查询自身精力 或 查询剩余精力 或 查询精力
                         -随机图片：@我 来点二次元 或 随机图片 或 来点涩图 或 来点色图
                         -帮助：@我 帮助 或 help
                         ============""";
@@ -73,13 +74,13 @@ public class HelpCommand implements MrsCommand {
         switch (messageType) {
             case PRIVATE -> {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
-                url = config.getClientUrl() + "/send_msg";
+                url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
-                url = config.getClientUrl() + "/send_msg";
+                url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 String groupId = groupReport.getGroupId();
                 template = MassageTemplate.groupTextTemplateSingle(groupId, s);
             }

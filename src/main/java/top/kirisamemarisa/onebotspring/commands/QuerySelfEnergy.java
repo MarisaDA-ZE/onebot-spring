@@ -61,7 +61,7 @@ public class QuerySelfEnergy implements MrsCommand {
             MData data = message.getData();
             if (data instanceof MText mText) {
                 String context = StrUtil.trim(mText.getText());
-                if ("查询自身精力".equals(context)) {
+                if ("查询精力".equals(context) || "查询自身精力".equals(context) || "查询剩余精力".equals(context)) {
                     return true;
                 }
             }

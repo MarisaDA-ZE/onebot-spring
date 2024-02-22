@@ -15,7 +15,7 @@ public class Utils {
     }
 
     public static String getRemainingTime(Date date) {
-        if(date == null) return null;
+        if (date == null) return null;
         long remainingTime = date.getTime() - new Date().getTime();
         if (remainingTime < 0) return null;
 
@@ -25,17 +25,21 @@ public class Utils {
 
         StringBuilder sb = new StringBuilder();
         if (hours > 0) {
-            if(hours < 10) sb.append("0");
+            if (hours < 10) sb.append("0");
             sb.append(hours).append("时");
         }
         if (minutes > 0) {
-            if(minutes < 10) sb.append("0");
+            if (minutes < 10) sb.append("0");
             sb.append(minutes).append("分");
         }
-        if(seconds < 10) sb.append("0");
+        if (seconds < 10) sb.append("0");
         sb.append(seconds).append("秒");
-            return sb.toString();
+        return sb.toString();
 
+    }
+
+    public static long millisToSeconds(long millis) {
+        return millis / 1000;
     }
 
     public static void main(String[] args) {
