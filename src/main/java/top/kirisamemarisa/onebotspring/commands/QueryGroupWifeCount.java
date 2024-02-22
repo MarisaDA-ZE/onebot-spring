@@ -90,7 +90,7 @@ public class QueryGroupWifeCount implements MrsCommand {
             case GROUP -> {
                 String groupId = groupReport.getGroupId();
                 Sender sender = groupReport.getSender();
-                BotConfig config = botUtil.getFriendConfig(groupReport);
+                BotConfig config = botUtil.getGroupConfig(groupReport);
                 // 配置文件不存在
                 if (ObjectUtils.isEmpty(config)) {
                     String s = "当前账号暂未注册，请先注册后使用哦~";
@@ -136,7 +136,7 @@ public class QueryGroupWifeCount implements MrsCommand {
                     context.delete(context.length() - 1, context.length());
                     templateContext = context.toString();
                 } else {
-                    templateContext = "您在本群还没有群老婆，快点把群友们娶回家吧！";
+                    templateContext = "您在本群还没有群老婆哟，快来把可爱的群友们娶回家吧！";
                 }
                 template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), templateContext);
             }

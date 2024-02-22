@@ -95,7 +95,7 @@ public class BindGroupWife implements MrsCommand {
                 template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), content);
             }
             case GROUP -> {
-                BotConfig config = botUtil.getFriendConfig(groupReport);
+                BotConfig config = botUtil.getGroupConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Massage[] messages = groupReport.getMessage();
                 String target = "";

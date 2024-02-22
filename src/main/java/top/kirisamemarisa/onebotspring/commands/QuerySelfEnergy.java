@@ -96,7 +96,7 @@ public class QuerySelfEnergy implements MrsCommand {
                 sexUserWrapper.eq("user_qq", sender.getUserId());
                 GroupSexUser sexUser = groupSexUserService.getOne(sexUserWrapper);
                 if (ObjectUtils.isEmpty(sexUser)) {
-                    String s = "当前账号暂未注册，请先绑定群老婆后再试~";
+                    String s = "账号还未注册，请先绑定群老婆后再试~";
                     template = MassageTemplate.groupTextTemplateSingle(groupId, s);
                 } else {
                     long l = System.currentTimeMillis();
