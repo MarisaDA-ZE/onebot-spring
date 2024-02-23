@@ -60,7 +60,11 @@ public class QueryGroupWifeCount implements MrsCommand {
             MData data = message.getData();
             if (data instanceof MText mText) {
                 String context = StrUtil.trim(mText.getText());
-                if ("查询群老婆人数".equals(context)) {
+                if (
+                        "查询群老婆人数".equals(context) ||
+                        "查询群老婆".equals(context) ||
+                        "查询老婆".equals(context)
+                ) {
                     return true;
                 }
             }

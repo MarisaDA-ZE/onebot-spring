@@ -3,9 +3,12 @@ package top.kirisamemarisa.onebotspring.commands.sexes;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import top.kirisamemarisa.onebotspring.common.Constant;
+import top.kirisamemarisa.onebotspring.enums.SexType;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
@@ -18,8 +21,10 @@ import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
+import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexDetail;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexUser;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
+import top.kirisamemarisa.onebotspring.entity.sexes.GroupWife;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexDetailService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
@@ -27,12 +32,13 @@ import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
 import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
 
 import java.util.*;
 
 /**
  * @Author: MarisaDAZE
- * @Description: 袭胸指令
+ * @Description: 揉胸指令
  * @Date: 2024/2/22
  */
 @Component
@@ -58,8 +64,8 @@ public class AttackChest implements MrsCommand {
     private final List<String> cmds = new ArrayList<>();
 
     {
-        cmds.add("/袭熊");
-        cmds.add("/袭胸");
+        cmds.add("/揉熊");
+        cmds.add("/揉胸");
     }
 
     @Override
@@ -83,7 +89,7 @@ public class AttackChest implements MrsCommand {
     @Transactional
     @Override
     public void action(GroupReport groupReport) {
-        System.out.println("涩涩-袭胸...");
+        System.out.println("涩涩-揉胸...");
         MassageType messageType = groupReport.getMessageType();
         String url = null;
         String template = null;
@@ -92,7 +98,7 @@ public class AttackChest implements MrsCommand {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
-                String s = "暂不支持私聊中进行袭胸操作！";
+                String s = "暂不支持私聊中进行揉胸操作！";
                 template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
@@ -150,7 +156,7 @@ public class AttackChest implements MrsCommand {
                     }
                 }
                 if (sender.getUserId().equals(target)) {
-                    String s = "不要袭自己的胸啊魂淡！•᷄ࡇ•᷅";
+                    String s = "不要揉自己的胸啊魂淡！•᷄ࡇ•᷅";
                     template = MassageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
@@ -159,12 +165,12 @@ public class AttackChest implements MrsCommand {
                 // 取出次数（没有次数就默认1次）
                 count = StrUtil.isNotBlank(textParams[1]) ? Integer.parseInt(textParams[1]) : 1;
                 if (count < 1) {
-                    String s = "次数太少啦！" + count + "次你叫我怎么袭•᷄ࡇ•᷅";
+                    String s = "次数太少啦！" + count + "次你叫我怎么揉•᷄ࡇ•᷅";
                     template = MassageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
-                }else if (count > 100){
-                    String s = "揉太多次啦QwQ";
+                } else if (count > 50) {
+                    String s = "揉太多次啦（每回最多揉50次哦）QwQ";
                     template = MassageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
@@ -179,16 +185,84 @@ public class AttackChest implements MrsCommand {
                         .eq("LOVE_NAME", target);
                 GroupSexWife sexWife = groupSexWifeService.getOne(sexWifeWrapper);
 
-
-
                 String s;
                 if (ObjectUtils.isEmpty(sexWife)) {
                     s = "不太对哦，没有找到QQ号或昵称为“" + target + "”的群老婆，有可能她还不是你老婆哦(´•ω•̥`)";
                 } else {
-                    // todo: 创建涩涩详情对象
+                    int expendEnergy = 1;   // 消耗精力
+                    int sensitiveVal = Math.max(Math.round(0.3f * count), 1);   // 产生敏感度 最每回最少产生1点
+                    sensitiveVal = Math.min(sensitiveVal, 2);      // 敏感度最每回最多加2
+                    int comfortVal = Math.max(Math.round(1.2f * count), 1);     // 产生快感度 最每回最少产生1点
+                    comfortVal = Math.min(comfortVal, 5);          // 舒服值最每回最多加5
+                    int lewdnessVal = Math.max(Math.round(0.5f * count), 1);    // 产生银乱值 最每回最少产生1点
+                    lewdnessVal = Math.min(lewdnessVal, 3);         // 银乱值每回合最多加3点
+                    // 获取群老婆对象（多群员共用一个）
+                    GroupWife groupWifeDb = groupWifeService.getById(sexWife.getWifeId());
+
+                    GroupWife groupWife = new GroupWife();
+                    BeanUtils.copyProperties(groupWifeDb, groupWife);   // 克隆数据 以免算错
+                    groupWife.setComfortValue(groupWifeDb.getComfortValue() + comfortVal);      // 快感度
+                    groupWife.setLewdnessLevel(groupWifeDb.getLewdnessLevel() + lewdnessVal);   // 银乱度
+                    groupWife.setSensitiveUdder(groupWifeDb.getSensitiveUdder() + sensitiveVal);// 欧派敏感度
+                    int remainEnergy = groupWifeDb.getRemainingEnergy();        // 获取做之前的精力
+                    groupWife.setRemainingEnergy(remainEnergy - expendEnergy);  // 扣除精力
+                    groupWife.setUpdateBy(sexWife.getUserId()); // 更新人
+                    groupWife.setUpdateTime(new Date());        // 更新时间
 
 
-                    s = "袭胸成功，" + sexWife.getLoveName() + sexWife.getCallName() + "快感增加" + (5 * count) + "点。";
+                    // 保存涩涩详情
+                    GroupSexDetail sexDetail = new GroupSexDetail();
+                    sexDetail.setId(SnowflakeUtil.nextId());    // 主键ID
+                    sexDetail.setGroupId(groupId);              // 群号
+                    sexDetail.setUserId(sexWife.getUserId());   // 用户ID
+                    sexDetail.setUserQq(sexWife.getUserQq());   // 用户QQ
+                    sexDetail.setWifeId(sexWife.getWifeId());   // 老婆ID
+                    sexDetail.setWifeQq(sexWife.getWifeQq());   // 老婆QQ
+                    sexDetail.setSexType(SexType.HARASS);       // 涩涩类型（骚扰）
+                    sexDetail.setOperationsCount(count);        // 进行次数
+                    sexDetail.setExpendEnergy(expendEnergy);    // 消耗精力
+                    sexDetail.setGenerateComfort(comfortVal);   // 快感度
+                    sexDetail.setGenerateSensitiveUdder(sensitiveVal);  // 欧派敏感度
+                    sexDetail.setGenerateLewdness(lewdnessVal); // 银乱值
+
+                    // 亲密度：低于65（一般朋友） 则减1+round(count * 0.2)否则加（单次范围：±1~3）
+                    Integer intimate = Constant.DEFAULT_INTIMATE;  // 初始值是45
+                    // 查上一条自己产生的涩涩记录
+                    GroupSexDetail beforeSexDetail = groupSexDetailService.getBeforeSexDetail(groupId, sexUser.getId(), groupWife.getId());
+                    if (!ObjectUtils.isEmpty(beforeSexDetail)) intimate = beforeSexDetail.getIntimate();
+                    int currentIntimate = Math.max(Math.round(count * 0.2f), 1);
+                    currentIntimate = Math.min(currentIntimate, 3);
+                    currentIntimate = intimate > 60 ? currentIntimate : -currentIntimate;
+                    intimate += currentIntimate;
+                    sexDetail.setIntimate(intimate);    // 设置亲密度
+
+                    // 情绪值：亲密度为正 则加 (0.75 * 亲密度) 否则减 （单次范围±1~2）
+                    Integer emotion = groupWife.getEmotion();
+                    int currentEmotion = Math.round(currentIntimate * 0.75f);
+                    emotion += currentEmotion;
+                    groupWife.setEmotion(emotion);// 设置老婆的情绪值
+                    sexDetail.setGenerateEmotion(currentEmotion);// 设置情绪值
+                    sexDetail.setCreateTime(new Date());        // 创建时间
+                    sexDetail.setCreateBy(sexWife.getUserId()); // 创建时间
+
+                    // 更新数据库
+                    groupSexDetailService.save(sexDetail);
+                    groupWifeService.updateById(groupWife);
+
+                    // 组装反馈信息
+                    String intimateDictText = Constant.getIntimateDictText(intimate);
+                    String emotionDictText = Constant.getEmotionDictText(emotion);
+
+                    StringBuilder sb = new StringBuilder("揉胸成功，");
+                    sb.append(sexWife.getLoveName()).append(sexWife.getCallName());
+                    sb.append("快感增加").append(comfortVal).append("；");
+                    sb.append("好感度");
+                    if (currentIntimate > 0) sb.append("+");
+                    sb.append(currentIntimate).append("（").append(intimateDictText).append(" ").append(intimate).append("）；");
+                    sb.append("情绪");
+                    if (currentEmotion > 0) sb.append("+");
+                    sb.append(currentEmotion).append("（").append(emotionDictText).append(" ").append(emotion).append("）");
+                    s = sb.toString();
                 }
                 template = MassageTemplate.groupTextTemplateSingle(groupId, s);
             }

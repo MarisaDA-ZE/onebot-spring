@@ -34,7 +34,7 @@ spring:
 
 mybatis-plus:
   # 指定 Mapper XML 文件的位置，使用 classpath 通配符指定路径
-  mapper-locations: classpath:mapper/${project.database}/**/*.xml,classpath:mapper/*.xml
+  mapper-locations: classpath:mapper/${project.database}/**/*.xml,classpath:mapper/**/*.xml
   # 指定实体类的包路径，用于自动扫描并注册类型别名
   type-aliases-package: top.kirisamemarisa.onebotspring.entity
   configuration:

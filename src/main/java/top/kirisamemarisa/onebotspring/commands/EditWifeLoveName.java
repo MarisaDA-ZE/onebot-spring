@@ -173,7 +173,7 @@ public class EditWifeLoveName implements MrsCommand {
                 System.out.println("修改对象: " + sexWife);
                 GroupSexWife sexWifeUpdate = new GroupSexWife();
                 sexWifeUpdate.setId(sexWife.getId());
-                sexWifeUpdate.setNickName(loveName);
+                sexWifeUpdate.setLoveName(loveName);
                 groupSexWifeService.updateById(sexWifeUpdate);
                 template = MassageTemplate.groupTextTemplateSingle(groupId, "修改成功！");
             }

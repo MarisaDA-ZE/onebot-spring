@@ -10,4 +10,13 @@ import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexDetail;
  */
 public interface IGroupSexDetailService extends IService<GroupSexDetail> {
 
+    /**
+     * 获取上一次涩涩的记录
+     *
+     * @param groupId 群号
+     * @param userId  操作者ID
+     * @param wifeId  老婆ID
+     * @return .
+     */
+    GroupSexDetail getBeforeSexDetail(String groupId, String userId, String wifeId);
 }

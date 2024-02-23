@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexDetail;
 
+import java.util.List;
+
 /**
  * @Author: MarisaDAZE
  * @Description: GroupSexDetailMapper.描述
@@ -12,4 +14,14 @@ import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexDetail;
 
 @Mapper
 public interface GroupSexDetailMapper extends BaseMapper<GroupSexDetail> {
+
+    /**
+     * 获取上一次涩涩的记录
+     *
+     * @param groupId 群号
+     * @param userId  操作者ID
+     * @param wifeId  老婆ID
+     * @return .
+     */
+    GroupSexDetail getBeforeSexDetail(String groupId, String userId, String wifeId);
 }

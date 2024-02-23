@@ -2,6 +2,17 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.kirisamemarisa.onebotspring.entity.sexes.GroupSexDetail">
+<mapper namespace="top.kirisamemarisa.onebotspring.mapper.sexes.GroupSexDetailMapper">
 
+    <select id="getBeforeSexDetail" resultType="GroupSexDetail">
+        SELECT *
+        FROM `GROUP_SEX_DETAIL`
+        WHERE (`GROUP_ID`, `USER_ID`, `WIFE_ID`, `CREATE_TIME`) IN
+              (SELECT `GROUP_ID`, `USER_ID`, `WIFE_ID`, MAX(`CREATE_TIME`)
+               FROM `GROUP_SEX_DETAIL`
+               WHERE `GROUP_ID` = #{groupId}
+                 AND `USER_ID` = #{userId}
+                 AND `WIFE_ID` = #{wifeId}
+               GROUP BY `GROUP_ID`, `USER_ID`, `WIFE_ID`)
+    </select>
 </mapper>
