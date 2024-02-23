@@ -18,10 +18,8 @@ import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
-import top.kirisamemarisa.onebotspring.entity.sexes.GroupWife;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
 import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
@@ -43,9 +41,6 @@ public class QueryGroupWifeCount implements MrsCommand {
 
     @Value("${mrs-bot.default-client-url}")
     private String defaultClientURL;
-
-    @Resource
-    private IGroupWifeService groupWifeService;
 
     @Resource
     private IGroupSexWifeService groupSexWifeService;
@@ -103,34 +98,22 @@ public class QueryGroupWifeCount implements MrsCommand {
 
                 // 查询关联关系
                 QueryWrapper<GroupSexWife> sexWifeWrapper = new QueryWrapper<>();
-                sexWifeWrapper.eq("group_id", groupId);
-                sexWifeWrapper.eq("user_qq", sender.getUserId());
+                sexWifeWrapper.eq("GROUP_ID", groupId);
+                sexWifeWrapper.eq("USER_QQ", sender.getUserId());
                 List<GroupSexWife> sexWifeList = groupSexWifeService.list(sexWifeWrapper);
-                List<String> qqNums = sexWifeList.stream().map(GroupSexWife::getWifeQq).toList();
 
                 // 群老婆列表
-                QueryWrapper<GroupWife> wifeWrapper = new QueryWrapper<>();
-                wifeWrapper.eq("group_id", groupId);
-                wifeWrapper.eq("user_qq", sender.getUserId());
-                List<GroupWife> wifeList = groupWifeService.list(wifeWrapper);
                 String templateContext;
-                if (wifeList.size() > 0) {
-                    StringBuilder context = new StringBuilder("您在本群共有 " + wifeList.size() + " 位老婆，她们分别是：");
-                    wifeList.forEach(wife -> {
+                if (sexWifeList.size() > 0) {
+                    StringBuilder context = new StringBuilder("您在本群共有 " + sexWifeList.size() + " 位老婆，她们分别是：");
+                    sexWifeList.forEach(wife -> {
                         String nickName = wife.getNickName();
-                        String qq = wife.getWifeQq();
-                        int i = qqNums.indexOf(qq);
-                        String pNickName;
-                        if (i != -1) {
-                            GroupSexWife groupSexWife = sexWifeList.get(i);
-                            pNickName = groupSexWife.getNickName();
-                            context.append(pNickName)
-                                    .append("（")
-                                    .append(nickName)
-                                    .append("）");
-                        } else {
-                            context.append(nickName);
-                        }
+                        String loveName = wife.getLoveName();
+                        context.append(loveName)
+                                .append("（")
+                                .append(nickName)
+                                .append("）");
+
                         context.append("、");
                     });
                     context.delete(context.length() - 1, context.length());

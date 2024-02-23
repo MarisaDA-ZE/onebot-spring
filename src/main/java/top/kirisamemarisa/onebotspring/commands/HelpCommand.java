@@ -65,9 +65,12 @@ public class HelpCommand implements MrsCommand {
                         -绑定群老婆：[回复ta的消息] @<目标> 绑定群老婆
                         -群老婆人数：@我 查询群老婆人数
                         -查自身精力：@我 查询自身精力 或 查询剩余精力 或 查询精力
-                        -修改称呼：@我 修改昵称 @她 或 她的昵称 或她的QQ号
+                        -修改称呼：@我 [@她] 修改老婆爱称 或 编辑老婆爱称 或 更改老婆爱称 [旧爱称 或 QQ] 新爱称
                         -随机图片：@我 来点二次元 或 随机图片 或 来点涩图 或 来点色图
                         -帮助：@我 帮助 或 help
+                        
+                        -涩涩相关：
+                        --袭胸：[@对象] /袭胸 或 /袭胸[ 你老婆的爱称][ <次数>次]
                         ============""";
         MassageType messageType = groupReport.getMessageType();
         String url = null;

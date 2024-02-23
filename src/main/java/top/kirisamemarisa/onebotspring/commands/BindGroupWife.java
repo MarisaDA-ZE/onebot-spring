@@ -171,9 +171,8 @@ public class BindGroupWife implements MrsCommand {
                     }
 
                     QueryWrapper<GroupWife> wifeWrapper = new QueryWrapper<>();
-                    wifeWrapper.eq("group_id", groupId);
-                    wifeWrapper.eq("user_qq", sender.getUserId());
-                    wifeWrapper.eq("wife_qq", memberId);
+                    wifeWrapper.eq("GROUP_ID", groupId);
+                    wifeWrapper.eq("SELF_ID", memberId);
                     GroupWife groupWife = groupWifeService.getOne(wifeWrapper);
                     GroupWife groupWifeDb = groupWife;
                     // 群老婆不存在，则构建群老婆对象
@@ -181,11 +180,8 @@ public class BindGroupWife implements MrsCommand {
                         groupWife = new GroupWife();
                         groupWife.setId(SnowflakeUtil.nextId());
                         groupWife.setGroupId(groupId);
-                        groupWife.setUserId(groupSexUser.getId());
-                        groupWife.setUserQq(groupSexUser.getUserQq());
-                        groupWife.setWifeQq(target);
-                        groupWife.setNickName(data.getNickName());
-                        groupWife.setCreateBy("system");
+                        groupWife.setSelfId(memberId);
+                        groupWife.setCreateBy(groupSexUser.getId());
                         groupWife.setCreateTime(new Date());
                     } else {
                         template = MassageTemplate.groupTextTemplateSingle(groupId,
@@ -208,10 +204,11 @@ public class BindGroupWife implements MrsCommand {
                         groupSexWife.setUserId(groupSexUser.getId());
                         groupSexWife.setUserQq(groupSexUser.getUserQq());
                         groupSexWife.setWifeId(groupWife.getId());
-                        groupSexWife.setWifeQq(groupWife.getWifeQq());
+                        groupSexWife.setWifeQq(target);
+                        groupSexWife.setLoveName(nickName);
                         groupSexWife.setNickName(nickName);
                         groupSexWife.setCallName("老婆");
-                        groupSexWife.setCreateBy("system");
+                        groupSexWife.setCreateBy(groupSexUser.getId());
                         groupSexWife.setCreateTime(new Date());
                     }
 

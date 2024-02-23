@@ -9,11 +9,24 @@ import java.util.Date;
  * @Date: 2024/2/21
  */
 public class Utils {
+
+    /**
+     * 时间转字符串
+     *
+     * @param date .
+     * @return .
+     */
     public static String dateToString(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
     }
 
+    /**
+     * 倒计时
+     *
+     * @param date 结束时间
+     * @return .
+     */
     public static String getRemainingTime(Date date) {
         if (date == null) return null;
         long remainingTime = date.getTime() - new Date().getTime();
@@ -38,9 +51,17 @@ public class Utils {
 
     }
 
+    /**
+     * 毫秒转秒
+     *
+     * @param millis 毫秒值
+     * @return 秒
+     */
     public static long millisToSeconds(long millis) {
         return millis / 1000;
     }
+
+
 
     public static void main(String[] args) {
         long l = (1000 * 60 * 14);

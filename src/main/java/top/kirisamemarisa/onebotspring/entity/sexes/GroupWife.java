@@ -17,12 +17,8 @@ import java.util.Date;
 public class GroupWife {
     @TableId(type = IdType.AUTO)
     private String id;              // 主键ID
-    private String groupId;         // 群号
-    private String userId;          // 用户ID
-    private String userQq;          // 用户QQ号
-    private String wifeId;          // 群老婆ID（保留字段，暂时没用）
-    private String wifeQq;          // 群老婆QQ号
-    private String nickName;        // 群老婆昵称
+    private String groupId;         // 所属Q群号
+    private String selfId;          // 群老婆QQ号
     private int shootOutsideCount;  // 外设次数
     private int shootMouthCount;    // 口设次数
     private int shootInsideCount;   // 内设次数

@@ -31,12 +31,12 @@ import java.util.List;
 
 /**
  * @Author: MarisaDAZE
- * @Description: 修改群老婆的昵称
+ * @Description: 修改你对群老婆的爱称
  * @Date: 2024/2/22
  */
 @Component
 @BotCommand
-public class EditWifeName implements MrsCommand {
+public class EditWifeLoveName implements MrsCommand {
 
     @Resource
     private BotUtil botUtil;
@@ -115,7 +115,7 @@ public class EditWifeName implements MrsCommand {
                         HttpUtils.post(url, template);
                         return;
                 }
-                String newNickName = "";
+                String loveName = "";
                 // 分割 目标（at情况下没有）和新名字
                 for (Massage message : messages) {
                     ContentType mType = message.getType();
@@ -128,11 +128,11 @@ public class EditWifeName implements MrsCommand {
                         List<String> sl = Arrays.stream(textArray).filter(s -> !triggerText(s)).toList();
                         switch (sl.size()) {
                             // 只有一段，则这一段就是新昵称
-                            case 1 -> newNickName = sl.get(0);
+                            case 1 -> loveName = sl.get(0);
                             // 有两段，则第一段是target，第二段是新昵称
                             case 2 -> {
                                 target = sl.get(0);
-                                newNickName = sl.get(1);
+                                loveName = sl.get(1);
                             }
                             default -> {
                                 String s = "命令格式有误哦！";
@@ -144,11 +144,11 @@ public class EditWifeName implements MrsCommand {
                     }
                 }
 
-                System.out.println("target: " + target + ", newNickName: " + newNickName);
+                System.out.println("target: " + target + ", newNickName: " + loveName);
                 QueryWrapper<GroupSexWife> sexWifeWrapper = new QueryWrapper<>();
                 sexWifeWrapper.eq("GROUP_ID", groupId);
                 sexWifeWrapper.eq("USER_QQ", sender.getUserId());
-                sexWifeWrapper.eq("WIFE_QQ", target).or().eq("NICK_NAME", target);
+                sexWifeWrapper.eq("WIFE_QQ", target).or().eq("LOVE_NAME", target);
                 GroupSexWife sexWife = groupSexWifeService.getOne(sexWifeWrapper);
                 if (ObjectUtils.isEmpty(sexWife)) {
                     String s = "没有找到昵称或QQ为 " + target + " 的老婆，请检查输入";
@@ -161,10 +161,10 @@ public class EditWifeName implements MrsCommand {
                 sexWifeWrapper.clear();
                 sexWifeWrapper.eq("GROUP_ID", groupId);
                 sexWifeWrapper.eq("USER_QQ", sender.getUserId());
-                sexWifeWrapper.eq("NICK_NAME", newNickName);
+                sexWifeWrapper.eq("LOVE_NAME", loveName);
                 List<GroupSexWife> list = groupSexWifeService.list(sexWifeWrapper);
                 if (!ObjectUtils.isEmpty(list)) {
-                    String s = "昵称" + newNickName + "有重复，请重新想一个昵称吧！";
+                    String s = "爱称" + loveName + "重复，请重新想一个吧！";
                     template = MassageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
@@ -173,7 +173,7 @@ public class EditWifeName implements MrsCommand {
                 System.out.println("修改对象: " + sexWife);
                 GroupSexWife sexWifeUpdate = new GroupSexWife();
                 sexWifeUpdate.setId(sexWife.getId());
-                sexWifeUpdate.setNickName(newNickName);
+                sexWifeUpdate.setNickName(loveName);
                 groupSexWifeService.updateById(sexWifeUpdate);
                 template = MassageTemplate.groupTextTemplateSingle(groupId, "修改成功！");
             }
@@ -184,9 +184,9 @@ public class EditWifeName implements MrsCommand {
 
     private boolean triggerText(String key) {
         List<String> cmdList = new ArrayList<>();
-        cmdList.add("修改老婆昵称");
-        cmdList.add("编辑老婆昵称");
-        cmdList.add("更改老婆昵称");
+        cmdList.add("修改老婆爱称");
+        cmdList.add("编辑老婆爱称");
+        cmdList.add("更改老婆爱称");
         List<String> filter = cmdList.stream().filter(key::contains).toList();
         return filter.size() > 0;
     }

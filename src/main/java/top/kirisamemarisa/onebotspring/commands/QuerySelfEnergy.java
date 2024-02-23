@@ -92,8 +92,8 @@ public class QuerySelfEnergy implements MrsCommand {
                 Object lastRecover = redisTemplate.opsForValue().get("last_recover_energy_time");
                 Date lastRecoverTime = (Date) lastRecover;
                 QueryWrapper<GroupSexUser> sexUserWrapper = new QueryWrapper<>();
-                sexUserWrapper.eq("group_id", groupId);
-                sexUserWrapper.eq("user_qq", sender.getUserId());
+                sexUserWrapper.eq("GROUP_ID", groupId);
+                sexUserWrapper.eq("USER_QQ", sender.getUserId());
                 GroupSexUser sexUser = groupSexUserService.getOne(sexUserWrapper);
                 if (ObjectUtils.isEmpty(sexUser)) {
                     String s = "账号还未注册，请先绑定群老婆后再试~";

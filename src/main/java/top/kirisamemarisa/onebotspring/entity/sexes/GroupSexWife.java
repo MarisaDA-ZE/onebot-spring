@@ -22,6 +22,7 @@ public class GroupSexWife {
     private String userQq;      // 用户QQ号
     private String wifeId;      // 群老婆ID
     private String wifeQq;      // 群老婆QQ号
+    private String loveName;    // 群老婆爱称（不允许重复）
     private String nickName;    // 群老婆昵称
     private String callName;    // 群老婆称呼
     private Date createTime;    // 创建时间
