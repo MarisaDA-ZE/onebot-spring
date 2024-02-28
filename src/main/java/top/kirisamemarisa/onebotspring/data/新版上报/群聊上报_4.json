@@ -1,0 +1,73 @@
+{
+  "raw_message": "",
+  "self_id": "2529951593",
+  "message_id": 1709102550816,
+  "message_type": "group",
+  "message": [
+    {
+      "data": {
+        "mention": "2529951593",
+        "qq": "2529951593"
+      },
+      "type": "at"
+    },
+    {
+      "data": {
+        "text": " "
+      },
+      "type": "text"
+    },
+    {
+      "data": {
+        "mention": "2529951593",
+        "qq": "2529951593"
+      },
+      "type": "at"
+    },
+    {
+      "data": {
+        "text": " 嗨嗨嗨！"
+      },
+      "type": "text"
+    },
+    {
+      "data": {
+        "mention": "2529951593",
+        "qq": "2529951593"
+      },
+      "type": "at"
+    },
+    {
+      "data": {
+        "text": " "
+      },
+      "type": "text"
+    },
+    {
+      "data": {
+        "mention": "2529951593",
+        "qq": "2529951593"
+      },
+      "type": "at"
+    },
+    {
+      "data": {
+        "text": " "
+      },
+      "type": "text"
+    }
+  ],
+  "user_id": "3038488053",
+  "real_id": "7340552787972157201",
+  "sender": {
+    "user_id": "3038488053",
+    "nickname": "",
+    "card": "万号之主",
+    "role": "owner"
+  },
+  "sub_type": "normal",
+  "group_id": "701339984",
+  "post_type": "message",
+  "time": 1709105631,
+  "font": 14
+}
