@@ -183,6 +183,7 @@ public class TouchHead implements MrsCommand {
                         String wifeId = sexWife.getWifeId();
                         GroupWife wife = wifeService.getById(wifeId);
 
+                        // 构建涩涩详情
                         GroupSexDetail sexDetail = new GroupSexDetail();
                         sexDetail.setId(SnowflakeUtil.nextId());    // id
                         sexDetail.setGroupId(groupId);              // 群号
@@ -194,22 +195,17 @@ public class TouchHead implements MrsCommand {
                         sexDetail.setOperationsCount(count);        // 操作次数
                         sexDetail.setCreateBy(sexWife.getUserId()); // 创建人
                         sexDetail.setCreateTime(new Date());        // 创建时间
-                        // TODO: 亲密度可以从sexWife表中获取
-                        GroupSexDetail beforeDetail = sexDetailService.getBeforeSexDetail(groupId, sexWife.getUserId(), wifeId);
 
+                        // 数值计算
                         int expendEnergy = Math.round(Math.min(Math.max(count * 0.85f, 1), 6));     // 本次消耗精力值（1~6）
                         int generateEmotion = Math.round(Math.min(Math.max(count * 0.73f, 1), 4));  // 本次产生情绪值(1~4)
-                        int intimate = Constant.DEFAULT_INTIMATE;  // 当前亲密度（累计）
-                        // 有之前的操作记录
-                        if (!ObjectUtils.isEmpty(beforeDetail)) {
-                            intimate = beforeDetail.getIntimate();
-                        }
                         int currentIntimate = Math.round(generateEmotion * 0.75f);
-                        intimate += currentIntimate;
-                        // 摸头这几项都是正数
+                        int intimate = sexWife.getIntimateLevel() + currentIntimate;  // 累计亲密度
+
+                        // 设置数值（摸头这几项都是正数）
                         sexDetail.setExpendEnergy(expendEnergy);        // 本次消耗的精力值
                         sexDetail.setGenerateEmotion(generateEmotion);  // 本次产生的情绪值
-                        sexDetail.setIntimate(intimate);                // 设置亲密度（累计）
+                        sexDetail.setIntimate(currentIntimate);         // 本次产生的亲密度
 
                         // 更新群老婆对象
                         GroupWife updateWife = new GroupWife();
@@ -217,14 +213,22 @@ public class TouchHead implements MrsCommand {
                         updateWife.setEmotion(wife.getEmotion() + generateEmotion);                 // 情绪值
                         updateWife.setRemainingEnergy(wife.getRemainingEnergy() - expendEnergy);    // 剩余精力
 
+                        // 更新涩涩用户
                         GroupSexUser updateSexUser = new GroupSexUser();
                         updateSexUser.setId(sexUser.getId());                                       // ID
                         updateSexUser.setRemainingEnergy(sexUser.getRemainingEnergy() - expendEnergy);// 消耗精力
 
-                        // 操作数据库
+                        // 更新关联表
+                        GroupSexWife updateSexWife = new GroupSexWife();
+                        updateSexWife.setId(sexWife.getId());       //ID
+                        updateSexWife.setIntimateLevel(intimate);   // 累计亲密度
+
+                        // 操作数据库进行更新
                         wifeService.updateById(updateWife);         // 更新群老婆
                         sexUserService.updateById(updateSexUser);   // 更新涩涩群友
+                        sexWifeService.updateById(updateSexWife);   // 更新老婆亲密度
                         sexDetailService.save(sexDetail);           // 保存涩涩记录
+
 
                         // 返回字符串
                         text = "摸头成功，" +

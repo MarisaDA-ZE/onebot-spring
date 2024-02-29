@@ -25,6 +25,10 @@ public class GroupSexWife {
     private String loveName;    // 群老婆爱称（不允许重复）
     private String nickName;    // 群老婆昵称
     private String callName;    // 群老婆称呼
+
+    // 初始 45
+    // 累计亲密度（0~9：厌恶，10~19：讨厌，20~39：陌生，40~49：熟悉，50~59：朋友，60~79：喜欢，80~100+：夫妻）
+    private int intimateLevel;  // 亲密度（累计）
     private Date createTime;    // 创建时间
     private String createBy;    // 创建人
     private Date updateTime;    // 更新时间

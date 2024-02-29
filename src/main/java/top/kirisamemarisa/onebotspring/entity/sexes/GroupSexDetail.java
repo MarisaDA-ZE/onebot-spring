@@ -34,10 +34,7 @@ public class GroupSexDetail {
     private Integer isDrinkSperm;       // 是否饮金（0：否，1：是）
     private Integer expendEnergy;       // 本次消耗精力
     private Integer generateComfort;    // 产生舒服值
-
-    // 初始 45
-    // 累计亲密度（0~9：厌恶，10~19：讨厌，20~39：陌生，40~49：熟悉，50~59：朋友，60~79：喜欢，80~100+：夫妻）
-    private Integer intimate;
+    private Integer intimate;           // 增加亲密度
     private Integer generateLewdness;           // 产生银乱度
     private Integer generateEmotion;            // 产生情绪值
     private Integer generateSensitiveMouth;     // 增加敏感度（嘴）

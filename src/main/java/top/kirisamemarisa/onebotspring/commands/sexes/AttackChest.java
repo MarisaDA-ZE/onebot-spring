@@ -245,6 +245,7 @@ public class AttackChest implements MrsCommand {
                     sexDetail.setCreateTime(new Date());        // 创建时间
                     sexDetail.setCreateBy(sexWife.getUserId()); // 创建时间
 
+                    // TODO: 累计亲密度更新到关联表而不是详情表
                     // 更新数据库
                     groupSexDetailService.save(sexDetail);
                     groupWifeService.updateById(groupWife);
