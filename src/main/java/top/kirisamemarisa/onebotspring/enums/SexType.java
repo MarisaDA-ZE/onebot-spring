@@ -7,7 +7,8 @@ package top.kirisamemarisa.onebotspring.enums;
  * @Date: 2024/2/23
  */
 public enum SexType {
-    HARASS("骚扰"),       // 骚扰
+    NORMAL("正常的"),      // 正常活动
+    SEX_HARASS("悻骚扰"),  // 性骚扰
     NIPPLE("奈头"),       // 奈头
     CLITORIS("小红豆"),    // 银地
     ORAL_SEX("口角"),     // 口角

@@ -218,7 +218,7 @@ public class AttackChest implements MrsCommand {
                     sexDetail.setUserQq(sexWife.getUserQq());   // 用户QQ
                     sexDetail.setWifeId(sexWife.getWifeId());   // 老婆ID
                     sexDetail.setWifeQq(sexWife.getWifeQq());   // 老婆QQ
-                    sexDetail.setSexType(SexType.HARASS);       // 涩涩类型（骚扰）
+                    sexDetail.setSexType(SexType.SEX_HARASS);       // 涩涩类型（骚扰）
                     sexDetail.setOperationsCount(count);        // 进行次数
                     sexDetail.setExpendEnergy(expendEnergy);    // 消耗精力
                     sexDetail.setGenerateComfort(comfortVal);   // 快感度

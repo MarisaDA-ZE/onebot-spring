@@ -5,6 +5,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import top.kirisamemarisa.onebotspring.common.Constant;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
@@ -13,17 +14,23 @@ import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
+import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexDetail;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexUser;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
+import top.kirisamemarisa.onebotspring.entity.sexes.GroupWife;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.enums.CommandType;
+import top.kirisamemarisa.onebotspring.enums.SexType;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexDetailService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
+import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
 import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -40,11 +47,13 @@ public class TouchHead implements MrsCommand {
     private BotUtil botUtil;
 
     @Resource
-    private IGroupSexUserService sexUserService;
+    private IGroupWifeService wifeService;
 
     @Resource
     private IGroupSexWifeService sexWifeService;
 
+    @Resource
+    private IGroupSexUserService sexUserService;
     @Resource
     private IGroupSexDetailService sexDetailService;
 
@@ -83,7 +92,7 @@ public class TouchHead implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 String groupId = groupReport.getGroupId();
                 Sender sender = groupReport.getSender();
-                String userId = sender.getUserId();
+                String userQq = sender.getUserId();
                 List<MAt> ats = CommandUtil.getAts(groupReport);
                 String target;
                 int count;
@@ -132,10 +141,25 @@ public class TouchHead implements MrsCommand {
                     }
                 }
                 System.out.println(target + ", " + count);
+                if (count > 50) {
+                    String content = "头都给你摸秃噜皮了（不能超过50次哦）(´•ω•̥`)";
+                    sendErrorMessage(url, groupId, content);
+                    return;
+                }
+
+                QueryWrapper<GroupSexUser> sexUserWrapper = new QueryWrapper<>();
+                sexUserWrapper.eq("GROUP_ID", groupId);
+                sexUserWrapper.eq("USER_QQ", userQq);
+                GroupSexUser sexUser = sexUserService.getOne(sexUserWrapper);
+                if (ObjectUtils.isEmpty(sexUser)) {
+                    String content = "您（在本群）还未注册账号，请先注册后使用(´•ω•̥`)";
+                    sendErrorMessage(url, groupId, content);
+                    return;
+                }
 
                 QueryWrapper<GroupSexWife> sexWifeWrapper = new QueryWrapper<>();
                 sexWifeWrapper.eq("GROUP_ID", groupId);
-                sexWifeWrapper.eq("USER_QQ", userId);
+                sexWifeWrapper.eq("USER_QQ", userQq);
                 sexWifeWrapper.eq("WIFE_QQ", target)
                         .or()
                         .eq("LOVE_NAME", target);
@@ -151,7 +175,49 @@ public class TouchHead implements MrsCommand {
                     // 找到一个群老婆
                     case 1 -> {
                         GroupSexWife sexWife = sexWives.get(0);
+                        String wifeId = sexWife.getWifeId();
+                        GroupWife wife = wifeService.getById(wifeId);
 
+                        GroupSexDetail sexDetail = new GroupSexDetail();
+                        sexDetail.setId(SnowflakeUtil.nextId());    // id
+                        sexDetail.setGroupId(groupId);              // 群号
+                        sexDetail.setUserId(sexWife.getUserId());   // 用户ID
+                        sexDetail.setUserQq(userQq);                // 用户QQ
+                        sexDetail.setWifeId(wifeId);                // 群老婆ID
+                        sexDetail.setWifeQq(wife.getSelfId());      // 群老婆QQ
+                        sexDetail.setSexType(SexType.NORMAL);       // 涩涩类型（没有涩涩）
+                        sexDetail.setOperationsCount(count);        // 操作次数
+                        sexDetail.setCreateBy(sexWife.getUserId()); // 创建人
+                        sexDetail.setCreateTime(new Date());        // 创建时间
+                        GroupSexDetail beforeDetail = sexDetailService.getBeforeSexDetail(groupId, sexWife.getUserId(), wifeId);
+
+                        int expendEnergy = Math.round(Math.min(Math.max(count * 0.85f, 1), 6));     // 本次消耗精力值（1~6）
+                        int generateEmotion = Math.round(Math.min(Math.max(count * 0.73f, 1), 4));  // 本次产生情绪值(1~4)
+                        int intimate = Constant.DEFAULT_INTIMATE;  // 当前亲密度（累计）
+                        // 有之前的操作记录
+                        if (!ObjectUtils.isEmpty(beforeDetail)) {
+                            intimate = beforeDetail.getIntimate();
+                        }
+                        intimate += Math.round(generateEmotion * 0.75f);
+                        // 摸头这几项都是正数
+                        sexDetail.setExpendEnergy(expendEnergy);        // 本次消耗的精力值
+                        sexDetail.setGenerateEmotion(generateEmotion);  // 本次产生的情绪值
+                        sexDetail.setIntimate(intimate);                // 设置亲密度（累计）
+
+                        // 更新群老婆对象
+                        GroupWife updateWife = new GroupWife();
+                        updateWife.setId(wifeId);       // ID
+                        updateWife.setEmotion(wife.getEmotion() + generateEmotion);                 // 情绪值
+                        updateWife.setRemainingEnergy(wife.getRemainingEnergy() - expendEnergy);    // 剩余精力
+
+                        GroupSexUser updateSexUser = new GroupSexUser();
+                        updateSexUser.setId(sexUser.getId());                                       // ID
+                        updateSexUser.setRemainingEnergy(sexUser.getRemainingEnergy() - expendEnergy);// 消耗精力
+
+                        // 操作数据库
+                        wifeService.updateById(updateWife);         // 更新群老婆
+                        sexUserService.updateById(updateSexUser);   // 更新涩涩群友
+                        sexDetailService.save(sexDetail);           // 保存涩涩记录
                     }
 
                     // 找到多个群老婆
@@ -159,7 +225,7 @@ public class TouchHead implements MrsCommand {
                         StringBuilder sb = new StringBuilder();
                         sexWives.forEach(wife -> sb.append(wife.getLoveName()).append("、"));
                         if (sb.length() > 1) sb.delete(sb.length() - 1, sb.length());
-                        String content = "爱称似乎有点模糊，您要找" + sb + "中的哪一位呢？";
+                        String content = "爱称似乎有点模糊，共找到" + sb + "（" + sexWives.size() + "个）群老婆，请确定老婆后重新执行。";
                         sendErrorMessage(url, groupId, content);
                         return;
                     }
