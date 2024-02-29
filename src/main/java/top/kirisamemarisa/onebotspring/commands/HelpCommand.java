@@ -70,7 +70,8 @@ public class HelpCommand implements MrsCommand {
                         -帮助：@我 帮助 或 help
                         
                         -涩涩相关：
-                        --袭胸：[@对象] /袭胸 或 /袭胸[ 你老婆的爱称][ <次数>次]
+                        --摸头：[@对象] /摸头 或 /摸头[ 你老婆的爱称] [<次数>次]
+                        --袭胸：[@对象] /袭胸 或 /袭胸[ 你老婆的爱称] [<次数>次]
                         ============""";
         MassageType messageType = groupReport.getMessageType();
         String url = null;
