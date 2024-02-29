@@ -102,18 +102,20 @@ public class TouchHead implements MrsCommand {
                         String command = CommandUtil.concatenateMText(groupReport);
                         String trimmed = CommandUtil.trimCommand(command, "/摸头");
                         if (trimmed == null) {
+                            System.err.println("0-1");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
                             sendErrorMessage(url, groupId, content);
                             return;
                         }
                         String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_2);
                         if (array == null) {
+                            System.err.println("0-2");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
                             sendErrorMessage(url, groupId, content);
                             return;
                         }
                         target = array[0];
-                        count = Integer.parseInt(array[0]);
+                        count = Integer.parseInt(array[1]);
                     }
                     // @<target> /指令 [count次]
                     case 1 -> {
@@ -121,12 +123,14 @@ public class TouchHead implements MrsCommand {
                         String command = CommandUtil.concatenateMText(groupReport);
                         String trimmed = CommandUtil.trimCommand(command, "/摸头");
                         if (trimmed == null) {
+                            System.err.println("1-1");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
                             sendErrorMessage(url, groupId, content);
                             return;
                         }
                         String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_1);
                         if (array == null) {
+                            System.err.println("1-2");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
                             sendErrorMessage(url, groupId, content);
                             return;
@@ -135,6 +139,7 @@ public class TouchHead implements MrsCommand {
                     }
                     // 其它情况
                     default -> {
+                        System.err.println("3-1");
                         String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
                         sendErrorMessage(url, groupId, content);
                         return;
@@ -162,8 +167,9 @@ public class TouchHead implements MrsCommand {
                 sexWifeWrapper.eq("USER_QQ", userQq);
                 sexWifeWrapper.eq("WIFE_QQ", target)
                         .or()
-                        .eq("LOVE_NAME", target);
+                        .like("LOVE_NAME", target);
                 List<GroupSexWife> sexWives = sexWifeService.list(sexWifeWrapper);
+                String text;   // 机器人反馈的文本
                 switch (sexWives.size()) {
                     // 没有找到群老婆
                     case 0 -> {
@@ -171,7 +177,6 @@ public class TouchHead implements MrsCommand {
                         sendErrorMessage(url, groupId, content);
                         return;
                     }
-
                     // 找到一个群老婆
                     case 1 -> {
                         GroupSexWife sexWife = sexWives.get(0);
@@ -189,6 +194,7 @@ public class TouchHead implements MrsCommand {
                         sexDetail.setOperationsCount(count);        // 操作次数
                         sexDetail.setCreateBy(sexWife.getUserId()); // 创建人
                         sexDetail.setCreateTime(new Date());        // 创建时间
+                        // TODO: 亲密度可以从sexWife表中获取
                         GroupSexDetail beforeDetail = sexDetailService.getBeforeSexDetail(groupId, sexWife.getUserId(), wifeId);
 
                         int expendEnergy = Math.round(Math.min(Math.max(count * 0.85f, 1), 6));     // 本次消耗精力值（1~6）
@@ -198,7 +204,8 @@ public class TouchHead implements MrsCommand {
                         if (!ObjectUtils.isEmpty(beforeDetail)) {
                             intimate = beforeDetail.getIntimate();
                         }
-                        intimate += Math.round(generateEmotion * 0.75f);
+                        int currentIntimate = Math.round(generateEmotion * 0.75f);
+                        intimate += currentIntimate;
                         // 摸头这几项都是正数
                         sexDetail.setExpendEnergy(expendEnergy);        // 本次消耗的精力值
                         sexDetail.setGenerateEmotion(generateEmotion);  // 本次产生的情绪值
@@ -218,8 +225,14 @@ public class TouchHead implements MrsCommand {
                         wifeService.updateById(updateWife);         // 更新群老婆
                         sexUserService.updateById(updateSexUser);   // 更新涩涩群友
                         sexDetailService.save(sexDetail);           // 保存涩涩记录
-                    }
 
+                        // 返回字符串
+                        text = "摸头成功，" +
+                                "情绪值+" + generateEmotion + "（" + updateWife.getEmotion() + "／" + Constant.getEmotionDictText(updateWife.getEmotion()) + "）；" +
+                                "亲密度+" + currentIntimate + "（" + intimate + "／" + Constant.getIntimateDictText(intimate) + "）；" +
+                                "自身精力-" + expendEnergy + "（" + updateSexUser.getRemainingEnergy() + "）；" +
+                                sexWife.getLoveName() + sexWife.getCallName() + "精力-" + expendEnergy + "（" + updateWife.getRemainingEnergy() + "）";
+                    }
                     // 找到多个群老婆
                     default -> {
                         StringBuilder sb = new StringBuilder();
@@ -230,7 +243,7 @@ public class TouchHead implements MrsCommand {
                         return;
                     }
                 }
-                template = MassageTemplate.groupTextTemplateSingle(groupId, "0");
+                template = MassageTemplate.groupTextTemplateSingle(groupId, text);
             }
         }
         // System.out.println("模板: " + template);
