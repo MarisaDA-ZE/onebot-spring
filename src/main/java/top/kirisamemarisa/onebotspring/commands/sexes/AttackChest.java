@@ -226,15 +226,12 @@ public class AttackChest implements MrsCommand {
                     sexDetail.setGenerateLewdness(lewdnessVal); // 银乱值
 
                     // 亲密度：低于65（一般朋友） 则减1+round(count * 0.2)否则加（单次范围：±1~3）
-                    Integer intimate = Constant.DEFAULT_INTIMATE;  // 初始值是45
-                    // 查上一条自己产生的涩涩记录
-                    GroupSexDetail beforeSexDetail = groupSexDetailService.getBeforeSexDetail(groupId, sexUser.getId(), groupWife.getId());
-                    if (!ObjectUtils.isEmpty(beforeSexDetail)) intimate = beforeSexDetail.getIntimate();
+                    Integer intimate = sexWife.getIntimateLevel();  // 亲密度（初始值是45）
                     int currentIntimate = Math.max(Math.round(count * 0.2f), 1);
                     currentIntimate = Math.min(currentIntimate, 3);
                     currentIntimate = intimate > 60 ? currentIntimate : -currentIntimate;
                     intimate += currentIntimate;
-                    sexDetail.setIntimate(intimate);    // 设置亲密度
+                    sexDetail.setIntimate(currentIntimate);    // 设置本次亲密度
 
                     // 情绪值：亲密度为正 则加 (0.75 * 亲密度) 否则减 （单次范围±1~2）
                     Integer emotion = groupWife.getEmotion();
@@ -245,10 +242,21 @@ public class AttackChest implements MrsCommand {
                     sexDetail.setCreateTime(new Date());        // 创建时间
                     sexDetail.setCreateBy(sexWife.getUserId()); // 创建时间
 
-                    // TODO: 累计亲密度更新到关联表而不是详情表
+                    // 更新关联表中的情绪值
+                    GroupSexWife updateSexWife = new GroupSexWife();
+                    updateSexWife.setId(sexWife.getId());
+                    updateSexWife.setIntimateLevel(intimate);
+
+                    // 更新自身精力
+                    GroupSexUser updateSexUser = new GroupSexUser();
+                    updateSexUser.setId(sexUser.getId());
+                    updateSexUser.setRemainingEnergy(sexUser.getRemainingEnergy() - expendEnergy);
+
                     // 更新数据库
-                    groupSexDetailService.save(sexDetail);
                     groupWifeService.updateById(groupWife);
+                    groupSexUserService.updateById(updateSexUser);
+                    groupSexWifeService.updateById(updateSexWife);
+                    groupSexDetailService.save(sexDetail);
 
                     // 组装反馈信息
                     String intimateDictText = Constant.getIntimateDictText(intimate);
