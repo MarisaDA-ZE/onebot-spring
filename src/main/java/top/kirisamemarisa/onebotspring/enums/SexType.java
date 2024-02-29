@@ -7,6 +7,7 @@ package top.kirisamemarisa.onebotspring.enums;
  * @Date: 2024/2/23
  */
 public enum SexType {
+    // tips: 如果要改枚举名，那要将数据库中存储的枚举名一并修改
     NORMAL("正常的"),      // 正常活动
     SEX_HARASS("悻骚扰"),  // 性骚扰
     NIPPLE("奈头"),       // 奈头
