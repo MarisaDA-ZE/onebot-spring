@@ -1,13 +1,5 @@
 package top.kirisamemarisa.onebotspring.core.util;
 
-import cn.hutool.core.util.StrUtil;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MText;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
-import top.kirisamemarisa.onebotspring.core.enums.ContentType;
-
 /**
  * @Author: MarisaDAZE
  * @Description: 工具类

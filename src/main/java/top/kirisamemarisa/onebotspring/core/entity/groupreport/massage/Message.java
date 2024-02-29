@@ -12,7 +12,7 @@ import top.kirisamemarisa.onebotspring.core.enums.ContentType;
  */
 @Data
 @ToString
-public class Massage {
+public class Message {
 
     private MData data;
 

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.ToString;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Message;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
 import top.kirisamemarisa.onebotspring.core.enums.*;
 import top.kirisamemarisa.onebotspring.core.util.EnumUtils;
@@ -37,7 +37,7 @@ public class GroupReport {
     private long messageId;
 
     // 消息内容
-    private Massage[] message;
+    private Message[] message;
 
     // 消息子类型，如果是好友则是 friend，如果是群临时会话则是 group
     private SubType subType;
@@ -80,9 +80,9 @@ public class GroupReport {
                 // 消息内容
                 case "message" -> {
                     JSONArray array = data.getJSONArray(key);
-                    Massage[] massages = new Massage[array.size()];
+                    Message[] messages = new Message[array.size()];
                     for (int k = 0; k < array.size(); k++) {
-                        Massage massage = new Massage();
+                        Message message = new Message();
                         ContentType type = ContentType.UNKNOWN;
                         MData mData = null;
                         Object o = array.get(k);
@@ -95,11 +95,11 @@ public class GroupReport {
                             type = ContentType.translate((String) msg.get("type"));
                             mData = MData.translate(msg);
                         }
-                        massage.setType(type);
-                        massage.setData(mData);
-                        massages[k] = massage;
+                        message.setType(type);
+                        message.setData(mData);
+                        messages[k] = message;
                     }
-                    groupReport.setMessage(massages);
+                    groupReport.setMessage(messages);
                 }
                 // 匿名信息
                 case "anonymous" -> {

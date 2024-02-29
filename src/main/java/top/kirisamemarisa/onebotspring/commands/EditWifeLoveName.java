@@ -10,7 +10,7 @@ import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Message;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MText;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
@@ -49,13 +49,13 @@ public class EditWifeLoveName implements MrsCommand {
         MassageType messageType = groupReport.getMessageType();
         // 是否是群聊 并且at了自己
         if (messageType == MassageType.GROUP) {
-            boolean isAt = CommandUtil.groupBeAt(groupReport);
+            boolean isAt = CommandUtil.hasAtSelf(groupReport);
             if (!isAt) return false;
         }
 
-        Massage[] messages = groupReport.getMessage();
+        Message[] messages = groupReport.getMessage();
         // 触发
-        for (Massage message : messages) {
+        for (Message message : messages) {
             MData data = message.getData();
             if (data instanceof MText mText) {
                 String context = StrUtil.trim(mText.getText());
@@ -86,7 +86,7 @@ public class EditWifeLoveName implements MrsCommand {
                 String groupId = groupReport.getGroupId();
                 BotConfig config = botUtil.getGroupConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
-                Massage[] messages = groupReport.getMessage();
+                Message[] messages = groupReport.getMessage();
                 String target = "";
 
                 // at的形式寻找到目标
@@ -117,7 +117,7 @@ public class EditWifeLoveName implements MrsCommand {
                 }
                 String loveName = "";
                 // 分割 目标（at情况下没有）和新名字
-                for (Massage message : messages) {
+                for (Message message : messages) {
                     ContentType mType = message.getType();
                     // 是连续文本，则按空格分割
                     if (mType == ContentType.TEXT) {

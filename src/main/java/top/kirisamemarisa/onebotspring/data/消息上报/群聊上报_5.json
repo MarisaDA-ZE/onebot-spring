@@ -1,0 +1,27 @@
+{
+  "raw_message": "",
+  "self_id": "2529951593",
+  "message_id": 1709102550824,
+  "message_type": "group",
+  "message": [
+    {
+      "data": {
+        "data": "{\"app\":\"com.tencent.gxhServiceIntelligentTip\",\"desc\":\"鹿子零java\",\"view\":\"gxhServiceIntelligentTip\",\"bizsrc\":\"\",\"ver\":\"\",\"prompt\":\"冒泡\",\"appID\":\"\",\"sourceName\":\"\",\"actionData\":\"\",\"actionData_A\":\"\",\"sourceUrl\":\"\",\"meta\":{\"gxhServiceIntelligentTip\":{\"action\":\"\",\"appid\":\"gxhServiceIntelligentTip\",\"bgImg\":\"https:\\/\\/p.qlogo.cn\\/homework\\/0\\/hw_h_5d37122rx4cogkc65dc8947af82f\\/0\",\"reportParams\":{}}},\"config\":{\"autoSize\":0,\"ctime\":1691351380,\"forward\":1,\"height\":520,\"token\":\"4f8ae05ebca255eea79acad7f5a1edb5\",\"type\":\"normal\",\"width\":9999},\"text\":\"\",\"extraApps\":[],\"sourceAd\":\"\",\"extra\":\"\"}"
+      },
+      "type": "json"
+    }
+  ],
+  "user_id": "3038488053",
+  "real_id": "7340565241803207316",
+  "sender": {
+    "user_id": "3038488053",
+    "nickname": "",
+    "card": "万号之主",
+    "role": "owner"
+  },
+  "sub_type": "normal",
+  "group_id": "701339984",
+  "post_type": "message",
+  "time": 1709108530,
+  "font": 14
+}

@@ -14,7 +14,7 @@ import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Message;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MText;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
@@ -71,12 +71,12 @@ public class AttackChest implements MrsCommand {
     @Override
     public boolean trigger(GroupReport groupReport) {
         MassageType messageType = groupReport.getMessageType();
-        Massage[] messages = groupReport.getMessage();
+        Message[] messages = groupReport.getMessage();
         // 只监控群聊
         if (messageType != MassageType.GROUP) return false;
 
         // 触发
-        for (Massage message : messages) {
+        for (Message message : messages) {
             MData data = message.getData();
             if (data instanceof MText mText) {
                 String context = StrUtil.trim(mText.getText());
@@ -118,8 +118,8 @@ public class AttackChest implements MrsCommand {
                 }
                 String target = ""; // 目标账号的qq号或在本群的昵称
                 int count;
-                Massage[] messages = groupReport.getMessage();
-                for (Massage message : messages) {
+                Message[] messages = groupReport.getMessage();
+                for (Message message : messages) {
                     // 有at则目标直接为at的对象
                     if (message.getType() == ContentType.AT) {
                         MAt at = (MAt) message.getData();

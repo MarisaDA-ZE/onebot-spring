@@ -15,7 +15,7 @@ import top.kirisamemarisa.onebotspring.core.entity.groupmemberinfo.GroupMemberDe
 import top.kirisamemarisa.onebotspring.core.entity.groupmemberinfo.GroupMemberInfo;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Massage;
+import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Message;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MReply;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MText;
@@ -68,8 +68,8 @@ public class BindGroupWife implements MrsCommand {
         // 是群聊消息
         int flag = 0;
         if (messageType == MassageType.GROUP) {
-            Massage[] messages = groupReport.getMessage();
-            for (Massage message : messages) {
+            Message[] messages = groupReport.getMessage();
+            for (Message message : messages) {
                 // 消息中有回复
                 if (message.getType() == ContentType.REPLY) {
                     flag++;
@@ -107,10 +107,10 @@ public class BindGroupWife implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 String groupId = groupReport.getGroupId();
                 Sender sender = groupReport.getSender();
-                Massage[] messages = groupReport.getMessage();
+                Message[] messages = groupReport.getMessage();
                 String target;
                 String replyId = "";
-                for (Massage message : messages) {
+                for (Message message : messages) {
                     if (message.getType() == ContentType.REPLY) {
                         MReply reply = (MReply) message.getData();
                         replyId = String.valueOf(reply.getId());
@@ -121,7 +121,7 @@ public class BindGroupWife implements MrsCommand {
                 target = stringRedis.opsForValue().get(sk);
 
                 if (StrUtil.isBlank(target)) {
-                    for (Massage message : messages) {
+                    for (Message message : messages) {
                         if (message.getType() == ContentType.AT) {
                             MAt at = (MAt) message.getData();
                             target = at.getMention();
