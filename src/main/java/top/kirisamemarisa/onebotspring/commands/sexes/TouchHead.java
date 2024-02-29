@@ -231,11 +231,11 @@ public class TouchHead implements MrsCommand {
 
 
                         // 返回字符串
-                        text = "摸头成功，" +
+                        text = "摸头成功，" + sexWife.getLoveName() + sexWife.getCallName() +
                                 "情绪值+" + generateEmotion + "（" + updateWife.getEmotion() + "／" + Constant.getEmotionDictText(updateWife.getEmotion()) + "）；" +
                                 "亲密度+" + currentIntimate + "（" + intimate + "／" + Constant.getIntimateDictText(intimate) + "）；" +
                                 "自身精力-" + expendEnergy + "（" + updateSexUser.getRemainingEnergy() + "）；" +
-                                sexWife.getLoveName() + sexWife.getCallName() + "精力-" + expendEnergy + "（" + updateWife.getRemainingEnergy() + "）";
+                                sexWife.getCallName() + "精力-" + expendEnergy + "（" + updateWife.getRemainingEnergy() + "）";
                     }
                     // 找到多个群老婆
                     default -> {
