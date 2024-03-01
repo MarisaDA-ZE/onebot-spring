@@ -12,7 +12,19 @@ import java.util.List;
  * @Description: MassageUtil.描述
  * @Date: 2024/1/21
  */
-public class MassageTemplate {
+public class MessageTemplate {
+
+    /**
+     * 发送错误消息
+     *
+     * @param url     机器人地址
+     * @param groupId 群号
+     * @param msg     消息
+     */
+    public static void sendGroupMessage(String url, String groupId, String msg) {
+        String template = MessageTemplate.groupTextTemplateSingle(groupId, msg);
+        HttpUtils.post(url, template);
+    }
 
     /**
      * 获取群成员信息的模板

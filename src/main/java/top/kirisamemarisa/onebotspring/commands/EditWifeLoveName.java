@@ -22,7 +22,7 @@ import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +79,7 @@ public class EditWifeLoveName implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 String s = "暂不支持私聊中修改昵称！";
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
                 Sender sender = groupReport.getSender();
@@ -111,7 +111,7 @@ public class EditWifeLoveName implements MrsCommand {
                         break;
                     default:
                         String s = "命令格式有误哦！";
-                        template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                        template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                         HttpUtils.post(url, template);
                         return;
                 }
@@ -136,7 +136,7 @@ public class EditWifeLoveName implements MrsCommand {
                             }
                             default -> {
                                 String s = "命令格式有误哦！";
-                                template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                                template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                                 HttpUtils.post(url, template);
                                 return;
                             }
@@ -152,7 +152,7 @@ public class EditWifeLoveName implements MrsCommand {
                 GroupSexWife sexWife = groupSexWifeService.getOne(sexWifeWrapper);
                 if (ObjectUtils.isEmpty(sexWife)) {
                     String s = "没有找到昵称或QQ为 " + target + " 的老婆，请检查输入";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                    template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
                 }
@@ -165,7 +165,7 @@ public class EditWifeLoveName implements MrsCommand {
                 List<GroupSexWife> list = groupSexWifeService.list(sexWifeWrapper);
                 if (!ObjectUtils.isEmpty(list)) {
                     String s = "爱称" + loveName + "重复，请重新想一个吧！";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                    template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
                 }
@@ -175,7 +175,7 @@ public class EditWifeLoveName implements MrsCommand {
                 sexWifeUpdate.setId(sexWife.getId());
                 sexWifeUpdate.setLoveName(loveName);
                 groupSexWifeService.updateById(sexWifeUpdate);
-                template = MassageTemplate.groupTextTemplateSingle(groupId, "修改成功！");
+                template = MessageTemplate.groupTextTemplateSingle(groupId, "修改成功！");
             }
         }
         // System.out.println("模板: " + template);

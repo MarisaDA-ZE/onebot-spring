@@ -17,7 +17,7 @@ import top.kirisamemarisa.onebotspring.core.util.BotUtil;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 
 
 /**
@@ -70,13 +70,13 @@ public class RandomImage implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 String userId = sender.getUserId();
-                template = MassageTemplate.friendImageTemplateSingle(userId, sexURL_AllAge);
+                template = MessageTemplate.friendImageTemplateSingle(userId, sexURL_AllAge);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 String groupId = groupReport.getGroupId();
-                template = MassageTemplate.groupImageTemplateSingle(groupId, sexURL_AllAge);
+                template = MessageTemplate.groupImageTemplateSingle(groupId, sexURL_AllAge);
             }
         }
         // System.out.println("模板: " + template);

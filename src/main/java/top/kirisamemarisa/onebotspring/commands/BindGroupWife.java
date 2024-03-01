@@ -30,7 +30,7 @@ import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
 
 import java.util.Date;
@@ -100,7 +100,7 @@ public class BindGroupWife implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 String content = "在私聊中无法绑定群老婆哦~";
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), content);
+                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), content);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
@@ -131,20 +131,20 @@ public class BindGroupWife implements MrsCommand {
                 }
                 if (StrUtil.isBlank(target)) {
                     String s = "回复的消息过期了哟，请回复最近30分钟内发出的消息。（如果你要我做你的老婆，请不要删除回复时自动添加的@）";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                    template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
                 }
                 if(target.equals(sender.getUserId())){
                     String s = "您不能自己做自己的老婆哟！";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                    template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                     HttpUtils.post(url, template);
                     return;
                 }
 
                 System.out.println("绑定群老婆: " + target);
                 String u = config.getClientUrl() + ClientApi.GET_GROUP_MEMBER_INFO.getApiURL();
-                String s = MassageTemplate.getGroupMemberInfo(groupId, target);
+                String s = MessageTemplate.getGroupMemberInfo(groupId, target);
                 // 获取群成员信息
                 String res = HttpUtils.post(u, s);
                 GroupMemberInfo member = JSONObject.parseObject(res, GroupMemberInfo.class);
@@ -184,7 +184,7 @@ public class BindGroupWife implements MrsCommand {
                         groupWife.setCreateBy(groupSexUser.getId());
                         groupWife.setCreateTime(new Date());
                     } else {
-                        template = MassageTemplate.groupTextTemplateSingle(groupId,
+                        template = MessageTemplate.groupTextTemplateSingle(groupId,
                                 nickName + "已是您的老婆。");
                         HttpUtils.post(url, template);
                         return;
@@ -223,7 +223,7 @@ public class BindGroupWife implements MrsCommand {
                         groupSexWifeService.save(groupSexWife);
                     }
                 }
-                template = MassageTemplate.groupTextTemplateSingle(groupId, "绑定成功！");
+                template = MessageTemplate.groupTextTemplateSingle(groupId, "绑定成功！");
             }
         }
         HttpUtils.post(url, template);

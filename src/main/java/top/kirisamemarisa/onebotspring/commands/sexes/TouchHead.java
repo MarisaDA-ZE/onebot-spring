@@ -27,7 +27,7 @@ import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
 
 import java.util.Date;
@@ -85,7 +85,7 @@ public class TouchHead implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 String s = "私聊不允许摸头(´•ω•̥`)";
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
@@ -104,14 +104,14 @@ public class TouchHead implements MrsCommand {
                         if (trimmed == null) {
                             System.err.println("0-1");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
-                            sendErrorMessage(url, groupId, content);
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
                         String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_2);
                         if (array == null) {
                             System.err.println("0-2");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
-                            sendErrorMessage(url, groupId, content);
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
                         target = array[0];
@@ -125,14 +125,14 @@ public class TouchHead implements MrsCommand {
                         if (trimmed == null) {
                             System.err.println("1-1");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
-                            sendErrorMessage(url, groupId, content);
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
                         String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_1);
                         if (array == null) {
                             System.err.println("1-2");
                             String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
-                            sendErrorMessage(url, groupId, content);
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
                         count = Integer.parseInt(array[1]);
@@ -141,14 +141,14 @@ public class TouchHead implements MrsCommand {
                     default -> {
                         System.err.println("3-1");
                         String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
-                        sendErrorMessage(url, groupId, content);
+                        MessageTemplate.sendGroupMessage(url, groupId, content);
                         return;
                     }
                 }
                 System.out.println(target + ", " + count);
                 if (count > 50) {
                     String content = "头都给你摸秃噜皮了（不能超过50次哦）(´•ω•̥`)";
-                    sendErrorMessage(url, groupId, content);
+                    MessageTemplate.sendGroupMessage(url, groupId, content);
                     return;
                 }
 
@@ -157,8 +157,9 @@ public class TouchHead implements MrsCommand {
                 sexUserWrapper.eq("USER_QQ", userQq);
                 GroupSexUser sexUser = sexUserService.getOne(sexUserWrapper);
                 if (ObjectUtils.isEmpty(sexUser)) {
+                    System.err.println(userQq + "账号未注册(touchHead)");
                     String content = "您（在本群）还未注册账号，请先注册后使用(´•ω•̥`)";
-                    sendErrorMessage(url, groupId, content);
+                    MessageTemplate.sendGroupMessage(url, groupId, content);
                     return;
                 }
 
@@ -174,7 +175,7 @@ public class TouchHead implements MrsCommand {
                     // 没有找到群老婆
                     case 0 -> {
                         String content = "没有找到爱称／QQ为“" + target + "”的群老婆，是不是群老婆未绑定或者QQ／爱称输入有误？";
-                        sendErrorMessage(url, groupId, content);
+                        MessageTemplate.sendGroupMessage(url, groupId, content);
                         return;
                     }
                     // 找到一个群老婆
@@ -243,19 +244,14 @@ public class TouchHead implements MrsCommand {
                         sexWives.forEach(wife -> sb.append(wife.getLoveName()).append("、"));
                         if (sb.length() > 1) sb.delete(sb.length() - 1, sb.length());
                         String content = "爱称似乎有点模糊，共找到" + sb + "（" + sexWives.size() + "个）群老婆，请确定老婆后重新执行。";
-                        sendErrorMessage(url, groupId, content);
+                        MessageTemplate.sendGroupMessage(url, groupId, content);
                         return;
                     }
                 }
-                template = MassageTemplate.groupTextTemplateSingle(groupId, text);
+                template = MessageTemplate.groupTextTemplateSingle(groupId, text);
             }
         }
         // System.out.println("模板: " + template);
-        HttpUtils.post(url, template);
-    }
-
-    private void sendErrorMessage(String url, String groupId, String msg) {
-        String template = MassageTemplate.groupTextTemplateSingle(groupId, msg);
         HttpUtils.post(url, template);
     }
 }

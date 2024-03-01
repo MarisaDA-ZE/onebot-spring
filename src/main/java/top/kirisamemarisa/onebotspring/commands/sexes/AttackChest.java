@@ -3,11 +3,11 @@ package top.kirisamemarisa.onebotspring.commands.sexes;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import top.kirisamemarisa.onebotspring.common.Constant;
+import top.kirisamemarisa.onebotspring.enums.CommandType;
 import top.kirisamemarisa.onebotspring.enums.SexType;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.api.ClientApi;
@@ -18,7 +18,6 @@ import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Message;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MText;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
-import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.enums.MassageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexDetail;
@@ -30,8 +29,9 @@ import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexDetailService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
+import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
 
 import java.util.*;
@@ -49,16 +49,16 @@ public class AttackChest implements MrsCommand {
     private BotUtil botUtil;
 
     @Resource
-    private IGroupWifeService groupWifeService;
+    private IGroupWifeService wifeService;
 
     @Resource
-    private IGroupSexUserService groupSexUserService;
+    private IGroupSexUserService sexUserService;
 
     @Resource
-    private IGroupSexWifeService groupSexWifeService;
+    private IGroupSexWifeService sexWifeService;
 
     @Resource
-    private IGroupSexDetailService groupSexDetailService;
+    private IGroupSexDetailService sexDetailService;
 
     // 触发命令（可能有多条命令且只需要指令中带有任意一段命令字符时好用）
     private final List<String> cmds = new ArrayList<>();
@@ -89,7 +89,7 @@ public class AttackChest implements MrsCommand {
     @Transactional
     @Override
     public void action(GroupReport groupReport) {
-        System.out.println("涩涩-揉胸...");
+        System.out.println("揉胸...");
         MassageType messageType = groupReport.getMessageType();
         String url = null;
         String template = null;
@@ -98,185 +98,221 @@ public class AttackChest implements MrsCommand {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
-                String s = "暂不支持私聊中进行揉胸操作！";
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+                String s = "私聊不能揉胸(´•ω•̥`)";
+                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
-                String groupId = groupReport.getGroupId();
                 Sender sender = groupReport.getSender();
-
-                QueryWrapper<GroupSexUser> sexUserWrapper = new QueryWrapper<>();
-                sexUserWrapper.eq("GROUP_ID", groupId);
-                sexUserWrapper.eq("USER_QQ", sender.getUserId());
-                GroupSexUser sexUser = groupSexUserService.getOne(sexUserWrapper);
-                if (ObjectUtils.isEmpty(sexUser)) {
-                    String s = "您还未注册账号，请绑定群老婆后再试~";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
-                    HttpUtils.post(url, template);
-                }
-                String target = ""; // 目标账号的qq号或在本群的昵称
+                String userQq = sender.getUserId();
+                String groupId = groupReport.getGroupId();
+                List<MAt> ats = CommandUtil.getAts(groupReport);
+                String target;
                 int count;
-                Message[] messages = groupReport.getMessage();
-                for (Message message : messages) {
-                    // 有at则目标直接为at的对象
-                    if (message.getType() == ContentType.AT) {
-                        MAt at = (MAt) message.getData();
-                        target = at.getMention();
-                        break;
+                switch (ats.size()) {
+                    // /指令 <target> [count次]
+                    case 0 -> {
+                        String command = CommandUtil.concatenateMText(groupReport);
+                        String trimmed = CommandUtil.trimCommand(command, cmds);
+                        if (trimmed == null) {
+                            System.err.println("attack chest: 0-1");
+                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
+                            return;
+                        }
+                        String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_2);
+                        if (array == null) {
+                            System.err.println("attack chest: 0-2");
+                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
+                            return;
+                        }
+                        target = array[0];
+                        count = Integer.parseInt(array[1]);
                     }
-                }
-                StringBuilder tsb = new StringBuilder();
-                Arrays.stream(messages)
-                        .filter(msg -> msg.getType() == ContentType.TEXT)
-                        .forEach(msg -> {
-                            MText mText = (MText) msg.getData();
-                            tsb.append(mText.getText());
-                        });
-                String messageText = tsb.toString();
-                // 获取字符串中的参数 {用户名|null，1或者n次，n>= 0}
-                String[] textParams = getCommandParams(messageText);
-                if (ObjectUtils.isEmpty(textParams)) {
-                    String s = "指令错误，肯定是你输错了！٩(๑•̀ω•́๑)۶";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
-                    HttpUtils.post(url, template);
-                    return;
-                }
-
-                // target没有值，则0位应是QQ号或昵称，第1位应该是操作次数
-                if (StrUtil.isBlank(target)) {
-                    if (StrUtil.isNotBlank(textParams[0])) {
-                        target = textParams[0];
-                    } else {
-                        String s = "指令错误，找不到目标(´•ω•̥`)";
-                        template = MassageTemplate.groupTextTemplateSingle(groupId, s);
-                        HttpUtils.post(url, template);
+                    // @<target> /指令 [count次]
+                    case 1 -> {
+                        target = ats.get(0).getMention();
+                        String command = CommandUtil.concatenateMText(groupReport);
+                        String trimmed = CommandUtil.trimCommand(command, cmds);
+                        if (trimmed == null) {
+                            System.err.println("attack chest: 1-1");
+                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
+                            return;
+                        }
+                        String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_1);
+                        if (array == null) {
+                            System.err.println("attack chest: 1-2");
+                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            MessageTemplate.sendGroupMessage(url, groupId, content);
+                            return;
+                        }
+                        count = Integer.parseInt(array[1]);
+                    }
+                    // 其它情况
+                    default -> {
+                        System.err.println("attack chest: 2-1");
+                        String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                        MessageTemplate.sendGroupMessage(url, groupId, content);
                         return;
                     }
                 }
-                if (sender.getUserId().equals(target)) {
-                    String s = "不要揉自己的胸啊魂淡！•᷄ࡇ•᷅";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
-                    HttpUtils.post(url, template);
+
+                // target 和 count 处理完成
+                System.out.println(target + ", " + count);
+                if (count > 50) {
+                    String content = "揉太多次啦（每回最多揉50次）(´•ω•̥`)";
+                    MessageTemplate.sendGroupMessage(url, groupId, content);
                     return;
                 }
 
-                // 取出次数（没有次数就默认1次）
-                count = StrUtil.isNotBlank(textParams[1]) ? Integer.parseInt(textParams[1]) : 1;
-                if (count < 1) {
-                    String s = "次数太少啦！" + count + "次你叫我怎么揉•᷄ࡇ•᷅";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
-                    HttpUtils.post(url, template);
-                    return;
-                } else if (count > 50) {
-                    String s = "揉太多次啦（每回最多揉50次哦）QwQ";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
-                    HttpUtils.post(url, template);
+                QueryWrapper<GroupSexUser> sexUserWrapper = new QueryWrapper<>();
+                sexUserWrapper.eq("USER_QQ", userQq);
+                sexUserWrapper.eq("GROUP_ID", groupId);
+                GroupSexUser sexUser = sexUserService.getOne(sexUserWrapper);
+                if (ObjectUtils.isEmpty(sexUser)) {
+                    System.err.println(userQq + "账号未注册(attackChest)");
+                    String content = "您（在本群）还未注册账号，请先注册后使用(´•ω•̥`)";
+                    MessageTemplate.sendGroupMessage(url, groupId, content);
                     return;
                 }
-                System.out.println("目标: " + target + ", 次数: " + count);
-                // 查找对应的群老婆
                 QueryWrapper<GroupSexWife> sexWifeWrapper = new QueryWrapper<>();
-                sexWifeWrapper.eq("USER_QQ", sender.getUserId());
+                sexWifeWrapper.eq("USER_QQ", userQq);
                 sexWifeWrapper.eq("GROUP_ID", groupId);
                 sexWifeWrapper.eq("WIFE_QQ", target)
                         .or()
-                        .eq("LOVE_NAME", target);
-                GroupSexWife sexWife = groupSexWifeService.getOne(sexWifeWrapper);
+                        .like("LOVE_NAME", target);
+                List<GroupSexWife> sexWives = sexWifeService.list(sexWifeWrapper);
+                String text;   // 机器人反馈的文本
+                switch (sexWives.size()) {
+                    // 没有找到群老婆
+                    case 0 -> {
+                        String content = "没有找到爱称／QQ为“" + target + "”的群老婆，是不是群老婆未绑定或者QQ／爱称输入有误？";
+                        MessageTemplate.sendGroupMessage(url, groupId, content);
+                        return;
+                    }
+                    // 找到一个群老婆
+                    case 1 -> {
+                        GroupSexWife sexWife = sexWives.get(0);
+                        String wifeId = sexWife.getWifeId();
+                        GroupWife wife = wifeService.getById(wifeId);
 
-                String s;
-                if (ObjectUtils.isEmpty(sexWife)) {
-                    s = "不太对哦，没有找到QQ号或昵称为“" + target + "”的群老婆，有可能她还不是你老婆哦(´•ω•̥`)";
-                } else {
-                    int expendEnergy = 1;   // 消耗精力
-                    int sensitiveVal = Math.max(Math.round(0.3f * count), 1);   // 产生敏感度 最每回最少产生1点
-                    sensitiveVal = Math.min(sensitiveVal, 2);      // 敏感度最每回最多加2
-                    int comfortVal = Math.max(Math.round(1.2f * count), 1);     // 产生快感度 最每回最少产生1点
-                    comfortVal = Math.min(comfortVal, 5);          // 舒服值最每回最多加5
-                    int lewdnessVal = Math.max(Math.round(0.5f * count), 1);    // 产生银乱值 最每回最少产生1点
-                    lewdnessVal = Math.min(lewdnessVal, 3);         // 银乱值每回合最多加3点
-                    // 获取群老婆对象（多群员共用一个）
-                    GroupWife groupWifeDb = groupWifeService.getById(sexWife.getWifeId());
+                        // 计算值
+                        int expendEnergy = Math.round(Math.min(Math.max(count * 0.42f, 6), 1));     // 消耗精力
+                        int sensitiveVal = Math.round(Math.min(Math.max(count * 0.3f, 3), 1));      // 产生敏感度 每回产生1~3点
+                        int comfortVal = Math.round(Math.min(Math.max(count * 1.2f, 5), 1));        // 产生快感度 每回产生1~5点
+                        int lewdnessVal = Math.round(Math.min(Math.max(count * 0.5f, 3), 1));       // 产生银乱值 每回产生1~3点
+                        // 亲密度：低于65（一般朋友） 则减1+round(count * 0.2)否则加（单次范围：±1~3）
+                        int intimate = sexWife.getIntimateLevel();  // 亲密度（初始值是45）
+                        int currentIntimate = Math.round(Math.min(Math.max(count * 0.2f, 3), 1));   // 产生亲密度
+                        currentIntimate = intimate > 60 ? currentIntimate : -currentIntimate;
+                        intimate += currentIntimate;
+                        // 情绪值：亲密度为正 则加 (0.75 * 亲密度) 否则减 （单次范围±1~2）
+                        Integer emotion = wife.getEmotion();
+                        int currentEmotion = Math.round(currentIntimate * 0.75f);
+                        emotion += currentEmotion;
 
-                    GroupWife groupWife = new GroupWife();
-                    BeanUtils.copyProperties(groupWifeDb, groupWife);   // 克隆数据 以免算错
-                    groupWife.setComfortValue(groupWifeDb.getComfortValue() + comfortVal);      // 快感度
-                    groupWife.setLewdnessLevel(groupWifeDb.getLewdnessLevel() + lewdnessVal);   // 银乱度
-                    groupWife.setSensitiveUdder(groupWifeDb.getSensitiveUdder() + sensitiveVal);// 欧派敏感度
-                    int remainEnergy = groupWifeDb.getRemainingEnergy();        // 获取做之前的精力
-                    groupWife.setRemainingEnergy(remainEnergy - expendEnergy);  // 扣除精力
-                    groupWife.setUpdateBy(sexWife.getUserId()); // 更新人
-                    groupWife.setUpdateTime(new Date());        // 更新时间
+                        // 保存涩涩详情
+                        GroupSexDetail sexDetail = new GroupSexDetail();
+                        sexDetail.setId(SnowflakeUtil.nextId());    // 主键ID
+                        sexDetail.setGroupId(groupId);              // 群号
+                        sexDetail.setUserId(sexWife.getUserId());   // 用户ID
+                        sexDetail.setUserQq(sexWife.getUserQq());   // 用户QQ
+                        sexDetail.setWifeId(sexWife.getWifeId());   // 老婆ID
+                        sexDetail.setWifeQq(sexWife.getWifeQq());   // 老婆QQ
+                        sexDetail.setSexType(SexType.SEX_HARASS);   // 涩涩类型（骚扰）
+                        sexDetail.setOperationsCount(count);        // 操作次数
+                        sexDetail.setExpendEnergy(expendEnergy);    // 消耗精力
+                        sexDetail.setGenerateComfort(comfortVal);   // 快感度
+                        sexDetail.setGenerateSensitiveUdder(sensitiveVal);  // 欧派敏感度
+                        sexDetail.setGenerateLewdness(lewdnessVal);     // 银乱值
+                        sexDetail.setIntimate(currentIntimate);         // 设置本次亲密度
+                        sexDetail.setGenerateEmotion(currentEmotion);   // 设置本次情绪值
+                        sexDetail.setCreateTime(new Date());            // 创建时间
+                        sexDetail.setCreateBy(sexWife.getUserId());     // 创建人
+
+                        // 更新群老婆的相关属性
+                        GroupWife updateWife = new GroupWife();
+                        updateWife.setId(wife.getId());     // 设置老婆的ID
+                        updateWife.setEmotion(emotion);     // 设置老婆的情绪值
+                        updateWife.setComfortValue(wife.getComfortValue() + comfortVal);        // 快感度
+                        updateWife.setLewdnessLevel(wife.getLewdnessLevel() + lewdnessVal);     // 银乱度
+                        updateWife.setSensitiveUdder(wife.getSensitiveUdder() + sensitiveVal);  // 欧派敏感度
+                        updateWife.setRemainingEnergy(wife.getRemainingEnergy() - expendEnergy);// 更新精力
+                        updateWife.setUpdateBy(sexWife.getUserId()); // 更新人
+                        updateWife.setUpdateTime(new Date());        // 更新时间
+
+                        // 更新关联表
+                        GroupSexWife updateSexWife = new GroupSexWife();
+                        updateSexWife.setId(sexWife.getId());           // ID
+                        updateSexWife.setIntimateLevel(intimate);       // 亲密度
+                        updateSexWife.setUpdateTime(new Date());        // 更新时间
+                        updateSexWife.setUpdateBy(sexWife.getUserId()); // 更新人
+
+                        // 更新自身精力
+                        GroupSexUser updateSexUser = new GroupSexUser();
+                        updateSexUser.setId(sexUser.getId());           // ID
+                        updateSexUser.setRemainingEnergy(sexUser.getRemainingEnergy() - expendEnergy);  // 自身精力
+                        updateSexUser.setUpdateTime(new Date());        // 更新时间
+                        updateSexUser.setUpdateBy(sexUser.getId());     // 更新人
 
 
-                    // 保存涩涩详情
-                    GroupSexDetail sexDetail = new GroupSexDetail();
-                    sexDetail.setId(SnowflakeUtil.nextId());    // 主键ID
-                    sexDetail.setGroupId(groupId);              // 群号
-                    sexDetail.setUserId(sexWife.getUserId());   // 用户ID
-                    sexDetail.setUserQq(sexWife.getUserQq());   // 用户QQ
-                    sexDetail.setWifeId(sexWife.getWifeId());   // 老婆ID
-                    sexDetail.setWifeQq(sexWife.getWifeQq());   // 老婆QQ
-                    sexDetail.setSexType(SexType.SEX_HARASS);       // 涩涩类型（骚扰）
-                    sexDetail.setOperationsCount(count);        // 进行次数
-                    sexDetail.setExpendEnergy(expendEnergy);    // 消耗精力
-                    sexDetail.setGenerateComfort(comfortVal);   // 快感度
-                    sexDetail.setGenerateSensitiveUdder(sensitiveVal);  // 欧派敏感度
-                    sexDetail.setGenerateLewdness(lewdnessVal); // 银乱值
+                        // 操作数据库进行更新
+                        wifeService.updateById(updateWife);         // 更新群老婆
+                        sexUserService.updateById(updateSexUser);   // 更新涩涩群友
+                        sexWifeService.updateById(updateSexWife);   // 更新老婆亲密度
+                        sexDetailService.save(sexDetail);           // 保存涩涩记录
 
-                    // 亲密度：低于65（一般朋友） 则减1+round(count * 0.2)否则加（单次范围：±1~3）
-                    Integer intimate = sexWife.getIntimateLevel();  // 亲密度（初始值是45）
-                    int currentIntimate = Math.max(Math.round(count * 0.2f), 1);
-                    currentIntimate = Math.min(currentIntimate, 3);
-                    currentIntimate = intimate > 60 ? currentIntimate : -currentIntimate;
-                    intimate += currentIntimate;
-                    sexDetail.setIntimate(currentIntimate);    // 设置本次亲密度
-
-                    // 情绪值：亲密度为正 则加 (0.75 * 亲密度) 否则减 （单次范围±1~2）
-                    Integer emotion = groupWife.getEmotion();
-                    int currentEmotion = Math.round(currentIntimate * 0.75f);
-                    emotion += currentEmotion;
-                    groupWife.setEmotion(emotion);// 设置老婆的情绪值
-                    sexDetail.setGenerateEmotion(currentEmotion);// 设置情绪值
-                    sexDetail.setCreateTime(new Date());        // 创建时间
-                    sexDetail.setCreateBy(sexWife.getUserId()); // 创建时间
-
-                    // 更新关联表中的情绪值
-                    GroupSexWife updateSexWife = new GroupSexWife();
-                    updateSexWife.setId(sexWife.getId());
-                    updateSexWife.setIntimateLevel(intimate);
-
-                    // 更新自身精力
-                    GroupSexUser updateSexUser = new GroupSexUser();
-                    updateSexUser.setId(sexUser.getId());
-                    updateSexUser.setRemainingEnergy(sexUser.getRemainingEnergy() - expendEnergy);
-
-                    // 更新数据库
-                    groupWifeService.updateById(groupWife);
-                    groupSexUserService.updateById(updateSexUser);
-                    groupSexWifeService.updateById(updateSexWife);
-                    groupSexDetailService.save(sexDetail);
-
-                    // 组装反馈信息
-                    String intimateDictText = Constant.getIntimateDictText(intimate);
-                    String emotionDictText = Constant.getEmotionDictText(emotion);
-
-                    StringBuilder sb = new StringBuilder("揉胸成功，");
-                    sb.append(sexWife.getLoveName()).append(sexWife.getCallName());
-                    sb.append("快感增加").append(comfortVal).append("；");
-                    sb.append("好感度");
-                    if (currentIntimate > 0) sb.append("+");
-                    sb.append(currentIntimate).append("（").append(intimateDictText).append(" ").append(intimate).append("）；");
-                    sb.append("情绪");
-                    if (currentEmotion > 0) sb.append("+");
-                    sb.append(currentEmotion).append("（").append(emotionDictText).append(" ").append(emotion).append("）");
-                    s = sb.toString();
+                        // 返回字符串
+                        StringBuilder sb = new StringBuilder("揉胸成功，");
+                        sb.append(sexWife.getLoveName()).append(sexWife.getCallName());
+                        sb.append("快感+")
+                                .append(comfortVal)
+                                .append("（")
+                                .append(updateWife.getComfortValue())
+                                .append("）；");
+                        sb.append("亲密度");
+                        if (currentIntimate > 0) sb.append("+");
+                        sb.append(currentIntimate)
+                                .append("（")
+                                .append(updateSexWife.getIntimateLevel())
+                                .append("／")
+                                .append(Constant.getIntimateDictText(updateSexWife.getIntimateLevel()))
+                                .append("）；");
+                        sb.append("情绪值");
+                        if (currentEmotion > 0) sb.append("+");
+                        sb.append(currentEmotion)
+                                .append("（")
+                                .append(updateWife.getEmotion())
+                                .append("／")
+                                .append(Constant.getEmotionDictText(updateWife.getEmotion()))
+                                .append("）");
+                        sb.append("自身精力-").append(expendEnergy)
+                                .append("（")
+                                .append(updateSexUser.getRemainingEnergy())
+                                .append("）；");
+                        sb.append(sexWife.getCallName())
+                                .append("精力-").append(expendEnergy)
+                                .append("（")
+                                .append(updateWife.getRemainingEnergy())
+                                .append("）");
+                        text = sb.toString();
+                    }
+                    // 找到多个群老婆
+                    default -> {
+                        StringBuilder sb = new StringBuilder();
+                        sexWives.forEach(wife -> sb.append(wife.getLoveName()).append("、"));
+                        if (sb.length() > 1) sb.delete(sb.length() - 1, sb.length());
+                        String content = "搜索似乎有点模糊，共找到" + sb + "（" + sexWives.size() + "个）群老婆，请确定老婆后重新执行。";
+                        MessageTemplate.sendGroupMessage(url, groupId, content);
+                        return;
+                    }
                 }
-                template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                template = MessageTemplate.groupTextTemplateSingle(groupId, text);
             }
         }
-        // System.out.println("模板: " + template);
         HttpUtils.post(url, template);
     }
 
@@ -285,43 +321,4 @@ public class AttackChest implements MrsCommand {
         return filter.size() > 0;
     }
 
-
-    /**
-     * 从字符串中获取到需要的参数
-     *
-     * @param command 指令字符串
-     * @return 结果
-     */
-    public String[] getCommandParams(String command) {
-        command = command.replaceAll("\\s+", " ");
-        String[] arr = command.split(" ");
-        if (ObjectUtils.isEmpty(arr)) return null;
-        List<String> cmdList = Arrays.stream(arr)
-                .filter(cmd -> !cmds.contains(cmd.trim()))
-                .toList();
-        List<String> uniqueList = new ArrayList<>(new LinkedHashSet<>(cmdList));
-        switch (uniqueList.size()) {
-            case 0 -> {
-                return new String[]{null, "1"};
-            }
-            case 1 -> {
-                List<String> list = uniqueList.stream().toList();
-                return new String[]{list.get(0).trim(), "1"};
-            }
-            case 2 -> {
-                List<String> list = uniqueList.stream().toList();
-                Integer count;
-                try {
-                    String s = (list.get(1).trim()).replaceAll("[^0-9]", "");
-                    count = Integer.parseInt(s);
-                } catch (Exception ignored) {
-                    count = 1;
-                }
-                return new String[]{list.get(0).trim(), String.valueOf(count)};
-            }
-            default -> {
-                return null;
-            }
-        }
-    }
 }

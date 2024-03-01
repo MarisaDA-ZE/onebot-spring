@@ -22,7 +22,7 @@ import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 
 import java.util.List;
 
@@ -84,7 +84,7 @@ public class QueryGroupWifeCount implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 String content = "无法在私聊中查询群老婆人数哦~";
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), content);
+                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), content);
             }
             case GROUP -> {
                 String groupId = groupReport.getGroupId();
@@ -93,7 +93,7 @@ public class QueryGroupWifeCount implements MrsCommand {
                 // 配置文件不存在
                 if (ObjectUtils.isEmpty(config)) {
                     String s = "当前账号暂未注册，请先注册后使用哦~";
-                    template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), s);
+                    template = MessageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), s);
                     url = defaultClientURL + ClientApi.SEND_MSG.getApiURL();
                     HttpUtils.post(url, template);
                     return;
@@ -125,7 +125,7 @@ public class QueryGroupWifeCount implements MrsCommand {
                 } else {
                     templateContext = "您在本群还没有群老婆哟，快来把可爱的群友们娶回家吧！";
                 }
-                template = MassageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), templateContext);
+                template = MessageTemplate.groupTextTemplateSingle(groupReport.getGroupId(), templateContext);
             }
         }
         HttpUtils.post(url, template);

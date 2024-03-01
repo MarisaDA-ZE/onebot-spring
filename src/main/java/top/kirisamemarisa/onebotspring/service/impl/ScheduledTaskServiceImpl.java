@@ -17,7 +17,7 @@ import top.kirisamemarisa.onebotspring.service.IBotConfigService;
 import top.kirisamemarisa.onebotspring.service.IScheduledTaskService;
 import top.kirisamemarisa.onebotspring.service.ITaskJobService;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class ScheduledTaskServiceImpl extends ServiceImpl<ScheduledTaskMapper, S
             List<String> strings = new ArrayList<>();
             System.out.println(list);
             list.forEach(e -> strings.add(JSONObject.toJSONString(e)));
-            String template = MassageTemplate.customGroupTemplate(job.getGroupId(), strings);
+            String template = MessageTemplate.customGroupTemplate(job.getGroupId(), strings);
             System.out.println(template);
             HttpUtils.post(url, template);
         });

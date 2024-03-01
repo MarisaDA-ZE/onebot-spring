@@ -13,7 +13,7 @@ import top.kirisamemarisa.onebotspring.service.IBotService;
 import top.kirisamemarisa.onebotspring.service.IScheduledTaskService;
 import top.kirisamemarisa.onebotspring.utils.BertUtils;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 
 import java.util.*;
 
@@ -111,13 +111,13 @@ public class BotServiceImpl implements IBotService {
                 String saoStr = "这是场漫长的旅途，但很快，我们就都将抵达各自的终点。";
                 if ("测试".equals(context)) {
                     String s = "测试消息,目标Q群: " + targetGroup;
-                    String template = MassageTemplate.groupTextTemplateSingle(targetGroup, s);
+                    String template = MessageTemplate.groupTextTemplateSingle(targetGroup, s);
                     HttpUtils.post(url, template);
                     return;
                 }
                 if (context.contains("来点骚话")) {
                     System.out.println("发送一句骚话...");
-                    String template = MassageTemplate.groupTextTemplateSingle(targetGroup, saoStr);
+                    String template = MessageTemplate.groupTextTemplateSingle(targetGroup, saoStr);
                     System.out.println(template);
 //                    HttpUtils.post(url, template);
                 } else if (context.contains("来点骚话语音") || context.contains("来点语音骚话")) {
@@ -127,7 +127,7 @@ public class BotServiceImpl implements IBotService {
                     sendAudioMassage(clientURL, targetGroup, cmd);
                 } else if (context.contains("复读文本：") || context.contains("复读文本:")) {
                     String cmd = context.substring(5);
-                    String template = MassageTemplate.groupTextTemplateSingle(targetGroup, cmd);
+                    String template = MessageTemplate.groupTextTemplateSingle(targetGroup, cmd);
                     HttpUtils.post(url, template);
                 } else if (context.contains("设置温度")) {
                     String tpt = context.substring("设置温度".length());
@@ -165,7 +165,7 @@ public class BotServiceImpl implements IBotService {
                 } else if (context.contains("来点二次元")) {
                     System.out.println("发送随机二次元图片...");
                     System.out.println(context);
-                    String template = MassageTemplate.groupImageTemplateSingle(targetGroup, sexURL_AllAge);
+                    String template = MessageTemplate.groupImageTemplateSingle(targetGroup, sexURL_AllAge);
                     HttpUtils.post(url, template);
                 } else if (context.contains("创建定时任务")) {
                     int i = context.indexOf('：');
@@ -184,19 +184,19 @@ public class BotServiceImpl implements IBotService {
                     String[] templates = template.split(",");
                     List<String> msgList = new ArrayList<>();
                     for (String tmp : templates) {
-                        String s = MassageTemplate.paragraphTextTemplate(tmp);
+                        String s = MessageTemplate.paragraphTextTemplate(tmp);
                         msgList.add(s);
                     }
                     String img = "https://img1.baidu.com/it/u=2206336034,3499768820&fm=253&fmt=auto&app=138&f=JPEG?w=952&h=500";
-                    String image = MassageTemplate.paragraphImageTemplate(img);
+                    String image = MessageTemplate.paragraphImageTemplate(img);
                     msgList.add(image);
                     System.out.println("cron: " + cron);
                     boolean created = scheduledTaskService.createTextTask(cron, sender, targetGroup, msgList.toString(), remark);
-                    String msg = MassageTemplate.groupTextTemplateSingle(targetGroup, "定时任务创建成功...");
+                    String msg = MessageTemplate.groupTextTemplateSingle(targetGroup, "定时任务创建成功...");
                     if (created) HttpUtils.post(url, msg);
                 } else if (context.contains("启动定时任务")) {
                     scheduledTaskService.startTextTaskByUserId(sender);
-                    String msg = MassageTemplate.groupTextTemplateSingle(targetGroup, "定时任务启动成功...");
+                    String msg = MessageTemplate.groupTextTemplateSingle(targetGroup, "定时任务启动成功...");
                     // HttpUtils.post(url, msg);
                 } else if (context.contains("帮助") || context.contains("help")) {
                     System.out.println("帮助...");
@@ -218,7 +218,7 @@ public class BotServiceImpl implements IBotService {
                                     -帮助：@我 help
                                     ============""";
                     System.out.println(s);
-                    String template = MassageTemplate.groupTextTemplateSingle(targetGroup, s);
+                    String template = MessageTemplate.groupTextTemplateSingle(targetGroup, s);
                     System.out.println("模板: "+template);
                     HttpUtils.post(url, template);
                 }
@@ -275,7 +275,7 @@ public class BotServiceImpl implements IBotService {
                 System.out.println(fileAbsolutePath);
                 String urlPath = fileAbsolutePath.substring(fileAbsolutePath.length() - 50);
                 urlPath = "/" + urlPath.replaceAll("\\\\", "/");
-                String audioTemplate = MassageTemplate.groupVoiceTemplate(groupId, audioFileURL + urlPath);
+                String audioTemplate = MessageTemplate.groupVoiceTemplate(groupId, audioFileURL + urlPath);
                 System.out.println(audioTemplate);
                 HttpUtils.post(cURL, audioTemplate);
             }

@@ -22,7 +22,7 @@ import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 import top.kirisamemarisa.onebotspring.utils.Utils;
 
 import java.util.Date;
@@ -82,7 +82,7 @@ public class QuerySelfEnergy implements MrsCommand {
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
                 String s = "私聊下无法查看自身精力哦~";
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
@@ -97,7 +97,7 @@ public class QuerySelfEnergy implements MrsCommand {
                 GroupSexUser sexUser = groupSexUserService.getOne(sexUserWrapper);
                 if (ObjectUtils.isEmpty(sexUser)) {
                     String s = "账号还未注册，请先绑定群老婆后再试~";
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                    template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                 } else {
                     long l = System.currentTimeMillis();
                     if (!ObjectUtils.isEmpty(lastRecoverTime)) {
@@ -108,7 +108,7 @@ public class QuerySelfEnergy implements MrsCommand {
                     int currentEnergy = sexUser.getRemainingEnergy();
                     String s0 = currentEnergy == maxEnergy ? "" : "（" + time + "后回复15点精力）";
                     String s = "当前账号精力: " + currentEnergy + "/" + maxEnergy + s0;
-                    template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                    template = MessageTemplate.groupTextTemplateSingle(groupId, s);
                 }
             }
         }

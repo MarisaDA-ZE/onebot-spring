@@ -16,7 +16,7 @@ import top.kirisamemarisa.onebotspring.core.util.BotUtil;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.utils.CommandUtil;
 import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MassageTemplate;
+import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
 
 
 /**
@@ -81,13 +81,13 @@ public class HelpCommand implements MrsCommand {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
-                template = MassageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
                 BotConfig config = botUtil.getGroupConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 String groupId = groupReport.getGroupId();
-                template = MassageTemplate.groupTextTemplateSingle(groupId, s);
+                template = MessageTemplate.groupTextTemplateSingle(groupId, s);
             }
         }
         // System.out.println("模板: " + template);
