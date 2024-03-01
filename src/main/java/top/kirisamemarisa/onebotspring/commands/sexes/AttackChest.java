@@ -200,13 +200,13 @@ public class AttackChest implements MrsCommand {
                         GroupWife wife = wifeService.getById(wifeId);
 
                         // 计算值
-                        int expendEnergy = Math.round(Math.min(Math.max(count * 0.42f, 6), 1));     // 消耗精力
-                        int sensitiveVal = Math.round(Math.min(Math.max(count * 0.3f, 3), 1));      // 产生敏感度 每回产生1~3点
-                        int comfortVal = Math.round(Math.min(Math.max(count * 1.2f, 5), 1));        // 产生快感度 每回产生1~5点
-                        int lewdnessVal = Math.round(Math.min(Math.max(count * 0.5f, 3), 1));       // 产生银乱值 每回产生1~3点
+                        int expendEnergy = Math.round(Math.max(Math.min(count * 0.42f, 8), 1));     // 消耗精力值 每回消耗1~8点
+                        int sensitiveVal = Math.round(Math.max(Math.min(count * 0.3f, 3), 1));      // 产生敏感度 每回产生1~3点
+                        int comfortVal = Math.round(Math.max(Math.min(count * 1.2f, 5), 1));        // 产生快感度 每回产生1~5点
+                        int lewdnessVal = Math.round(Math.max(Math.min(count * 0.5f, 3), 1));       // 产生银乱值 每回产生1~3点
                         // 亲密度：低于65（一般朋友） 则减1+round(count * 0.2)否则加（单次范围：±1~3）
                         int intimate = sexWife.getIntimateLevel();  // 亲密度（初始值是45）
-                        int currentIntimate = Math.round(Math.min(Math.max(count * 0.2f, 3), 1));   // 产生亲密度
+                        int currentIntimate = Math.round(Math.max(Math.min(count * 0.2f, 3), 1));   // 产生亲密度
                         currentIntimate = intimate > 60 ? currentIntimate : -currentIntimate;
                         intimate += currentIntimate;
                         // 情绪值：亲密度为正 则加 (0.75 * 亲密度) 否则减 （单次范围±1~2）
@@ -272,6 +272,16 @@ public class AttackChest implements MrsCommand {
                                 .append(comfortVal)
                                 .append("（")
                                 .append(updateWife.getComfortValue())
+                                .append("）；");
+                        sb.append("银乱度+")
+                                .append(lewdnessVal)
+                                .append("（")
+                                .append(updateWife.getLewdnessLevel())
+                                .append("）；");
+                        sb.append("欧派敏感度+")
+                                .append(sensitiveVal)
+                                .append("（")
+                                .append(updateWife.getSensitiveUdder())
                                 .append("）；");
                         sb.append("亲密度");
                         if (currentIntimate > 0) sb.append("+");

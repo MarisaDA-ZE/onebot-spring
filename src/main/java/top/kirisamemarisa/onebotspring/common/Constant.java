@@ -18,12 +18,11 @@ public class Constant {
     public static final long MILLIS_15 = 1000 * 60 * 15;// 15分钟（毫秒值）
     public static final long MILLIS_30 = 1000 * 60 * 30;// 30分钟（毫秒值）
     public static final String MASSAGE_ID_MAP = ":massage_id_map";// 消息ID和发送者QQ的对应
-
+    public static final String DEFAULT_CMD_SEPARATOR = " ";   // 默认命令分隔符
     public static final int DEFAULT_EMOTION = 60;   // 默认情绪值
 
     // 情绪字典（0~9：绝望，10~29：悲伤，30~39：焦虑，40~49：忧郁，50~69：平静，70~79：高兴，80~100+：兴奋）
     public static final Map<String, String> EMOTION_MAP = new HashMap<>();
-
     public static final int DEFAULT_INTIMATE = 45;   // 默认亲密度
 
     // 亲密度字典（0~9：厌恶，10~19：讨厌，20~39：陌生，40~49：熟悉，50~59：朋友，60~79：喜欢，80~100+：夫妻）

@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static top.kirisamemarisa.onebotspring.common.Constant.DEFAULT_CMD_SEPARATOR;
+
 /**
  * @Author: MarisaDAZE
  * @Description: 命令工具类
@@ -133,6 +135,38 @@ public class CommandUtil {
     }
 
     /**
+     * 检查command中是否有满足任何一个cmds列表的情况
+     *
+     * @param command   命令字符串
+     * @param cmds      命令列表
+     * @return 是否匹配
+     */
+    public static boolean containsCommands(String command, List<String> cmds) {
+        return containsCommands(command, DEFAULT_CMD_SEPARATOR, cmds);
+    }
+
+    /**
+     * 检查command中是否有满足任何一个cmds列表的情况
+     *
+     * @param command   命令字符串
+     * @param separator 分隔符
+     * @param cmds      命令列表
+     * @return 是否匹配
+     */
+    public static boolean containsCommands(String command, String separator, List<String> cmds) {
+        String[] split = command.split(separator);
+        boolean flag = false;
+        for (String str : split) {
+            String v = str.trim();
+            if (cmds.contains(v + "")) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    /**
      * 将上报消息中的字符串信息拼成一段
      *
      * @param groupReport 上报消息
@@ -150,7 +184,7 @@ public class CommandUtil {
      * @return .
      */
     public static String concatenateMText(Message[] messages) {
-        return concatenateMText(messages, " ");
+        return concatenateMText(messages, DEFAULT_CMD_SEPARATOR);
     }
 
     /**
@@ -184,7 +218,7 @@ public class CommandUtil {
      * @return .
      */
     public static String trimCommand(String text, String trim) {
-        return trimCommand(text, " ", Collections.singletonList(trim));
+        return trimCommand(text, DEFAULT_CMD_SEPARATOR, Collections.singletonList(trim));
     }
 
     /**
@@ -195,7 +229,7 @@ public class CommandUtil {
      * @return .
      */
     public static String trimCommand(String text, List<String> trims) {
-        return trimCommand(text, " ", trims);
+        return trimCommand(text, DEFAULT_CMD_SEPARATOR, trims);
     }
 
     /**
@@ -203,7 +237,7 @@ public class CommandUtil {
      *
      * @param text      待修剪的字符串
      * @param separator 分隔符
-     * @param trims     要修建的内容
+     * @param trims     要修剪的内容
      * @return .
      */
     public static String trimCommand(String text, String separator, List<String> trims) {
@@ -226,10 +260,10 @@ public class CommandUtil {
      *
      * @param command 指令（不带指令头）
      * @param type    参数类型
-     * @return 结果[target|null, count|null]
+     * @return 结果[target|null, count|1]
      */
     public static String[] getTargetAndCount(String command, CommandType type) {
-        return getTargetAndCount(command, " ", type);
+        return getTargetAndCount(command, DEFAULT_CMD_SEPARATOR, type);
     }
 
     /**
@@ -238,11 +272,9 @@ public class CommandUtil {
      * @param command   指令（不带指令头）
      * @param separator 分隔符
      * @param type      参数类型
-     * @return 结果[target|null, count|null]
+     * @return 结果[target|null, count|1]
      */
     public static String[] getTargetAndCount(String command, String separator, CommandType type) {
-        // 默认分隔符是空格
-        if (StrUtil.isBlank(separator)) separator = " ";
         String[] array = command.split(separator);
         String[] split = Arrays.stream(array).filter(StrUtil::isNotBlank).toArray(String[]::new);
         // 切分失败 或者长度不对
