@@ -3,6 +3,8 @@ package top.kirisamemarisa.onebotspring.service.sexes;
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
 
+import java.util.List;
+
 /**
  * @Author: MarisaDAZE
  * @Description: IGroupSexWifeService.描述
@@ -10,4 +12,13 @@ import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
  */
 public interface IGroupSexWifeService extends IService<GroupSexWife> {
 
+    /**
+     * 根据群老婆QQ、爱称、群号和用户QQ查询符合条件的群老婆
+     *
+     * @param groupId 群号
+     * @param userQq  用户QQ
+     * @param name    爱称/群老婆QQ
+     * @return 群老婆列表
+     */
+    List<GroupSexWife> getGroupWifeByQQ(String groupId, String userQq, String name);
 }

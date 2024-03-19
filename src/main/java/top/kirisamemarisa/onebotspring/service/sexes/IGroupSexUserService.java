@@ -10,4 +10,13 @@ import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexUser;
  */
 public interface IGroupSexUserService extends IService<GroupSexUser> {
 
+    /**
+     * 获取用户
+     *
+     * @param groupId 群号
+     * @param userQq  QQ号
+     * @return 封装后的授权用户
+     */
+    GroupSexUser getGroupUserByQQ(String groupId, String userQq);
+
 }

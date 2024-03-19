@@ -1,5 +1,6 @@
 package top.kirisamemarisa.onebotspring.service.impl.sexes;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexUser;
@@ -16,4 +17,11 @@ public class GroupSexUserServiceImpl
         extends ServiceImpl<GroupSexUserMapper, GroupSexUser>
         implements IGroupSexUserService {
 
+    @Override
+    public GroupSexUser getGroupUserByQQ(String groupId, String userQq) {
+        LambdaQueryWrapper<GroupSexUser> sexUserWrapper = new LambdaQueryWrapper<>();
+        sexUserWrapper.eq(GroupSexUser::getGroupId, groupId);
+        sexUserWrapper.eq(GroupSexUser::getUserQq, userQq);
+        return baseMapper.selectOne(sexUserWrapper);
+    }
 }

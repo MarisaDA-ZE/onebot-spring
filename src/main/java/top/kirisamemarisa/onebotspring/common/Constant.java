@@ -85,7 +85,7 @@ public class Constant {
             String _max = (split[1]).replaceAll("[^0-9]", "");
             int min = Integer.parseInt(_min);
             int max = Integer.parseInt(_max);
-            if (num >= min && num <= max) {
+            if (num >= min && num < max) {
                 key = k;
                 break;
             }

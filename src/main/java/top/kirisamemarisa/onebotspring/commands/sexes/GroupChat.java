@@ -20,15 +20,13 @@ import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
 import top.kirisamemarisa.onebotspring.entity.sexes.GroupWife;
 import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
 import top.kirisamemarisa.onebotspring.enums.CommandType;
+import top.kirisamemarisa.onebotspring.enums.Emoji;
 import top.kirisamemarisa.onebotspring.enums.SexType;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexDetailService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
 import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
-import top.kirisamemarisa.onebotspring.utils.CommandUtil;
-import top.kirisamemarisa.onebotspring.utils.HttpUtils;
-import top.kirisamemarisa.onebotspring.utils.MessageTemplate;
-import top.kirisamemarisa.onebotspring.utils.SnowflakeUtil;
+import top.kirisamemarisa.onebotspring.utils.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -92,7 +90,7 @@ public class GroupChat implements MrsCommand {
                 BotConfig config = botUtil.getFriendConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 Sender sender = groupReport.getSender();
-                String s = "私聊不允许闲谈操作(´•ω•̥`)";
+                String s = "私聊不允许闲谈操作" + Emoji.DISGUST_8.getEmoji();
                 template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
             case GROUP -> {
@@ -111,14 +109,14 @@ public class GroupChat implements MrsCommand {
                         String trimmed = CommandUtil.trimCommand(command, cmds);
                         if (trimmed == null) {
                             System.err.println("0-1");
-                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            String content = "指令格式有误哦，详情请查看涩涩帮助" + Emoji.SORROW_9.getEmoji();
                             MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
                         String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_2);
                         if (array == null) {
                             System.err.println("0-2");
-                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            String content = "指令格式有误哦，详情请查看涩涩帮助" + Emoji.SORROW_9.getEmoji();
                             MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
@@ -132,14 +130,14 @@ public class GroupChat implements MrsCommand {
                         String trimmed = CommandUtil.trimCommand(command, cmds);
                         if (trimmed == null) {
                             System.err.println("1-1");
-                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            String content = "指令格式有误哦，详情请查看涩涩帮助" + Emoji.SORROW_9.getEmoji();
                             MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
                         String[] array = CommandUtil.getTargetAndCount(trimmed, CommandType.TYPE_1);
                         if (array == null) {
                             System.err.println("1-2");
-                            String content = "指令格式有误哦，详情请查看涩涩帮助(´•ω•̥`)";
+                            String content = "指令格式有误哦，详情请查看涩涩帮助" + Emoji.SORROW_9.getEmoji();
                             MessageTemplate.sendGroupMessage(url, groupId, content);
                             return;
                         }
@@ -155,7 +153,7 @@ public class GroupChat implements MrsCommand {
                 }
                 System.out.println(target + ", " + count);
                 if (count > 50) {
-                    String content = "嘴都要累费了（不能超过50次哦）(´•ω•̥`)";
+                    String content = "嘴都要累费了（不能超过50次哦）" + Emoji.SORROW_9.getEmoji();
                     MessageTemplate.sendGroupMessage(url, groupId, content);
                     return;
                 }
@@ -166,7 +164,7 @@ public class GroupChat implements MrsCommand {
                 GroupSexUser sexUser = sexUserService.getOne(sexUserWrapper);
                 if (ObjectUtils.isEmpty(sexUser)) {
                     System.err.println(userQq + "账号未注册(groupChat)");
-                    String content = "您（在本群）还未注册账号，请先注册后使用(´•ω•̥`)";
+                    String content = "您（在本群）还未注册账号，请先注册后使用" + Emoji.SORROW_9.getEmoji();
                     MessageTemplate.sendGroupMessage(url, groupId, content);
                     return;
                 }
@@ -248,10 +246,7 @@ public class GroupChat implements MrsCommand {
                     }
                     // 找到多个群老婆
                     default -> {
-                        StringBuilder sb = new StringBuilder();
-                        sexWives.forEach(wife -> sb.append(wife.getLoveName()).append("、"));
-                        if (sb.length() > 1) sb.delete(sb.length() - 1, sb.length());
-                        String content = "爱称似乎有点模糊，共找到" + sb + "（" + sexWives.size() + "个）群老婆，请确定老婆后重新执行。";
+                        String content = SexObjectUtil.moreOneTarget(sexWives);
                         MessageTemplate.sendGroupMessage(url, groupId, content);
                         return;
                     }
