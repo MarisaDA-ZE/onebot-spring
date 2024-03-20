@@ -103,7 +103,7 @@ public class Rub implements MrsCommand {
                 // 获取群登录用户
                 GroupSexUser sexUser = sexUserService.getGroupUserByQQ(groupId, userQq);
                 if (ObjectUtils.isEmpty(sexUser)) {
-                    System.err.println(userQq + "账号未注册(Rub)");
+                    System.err.println(userQq + "账号未注册(Rub.class)");
                     String content = "您（在本群）还未注册账号，请先注册后使用" + Emoji.SORROW_9.getEmoji();
                     MessageTemplate.sendGroupMessage(url, groupId, content);
                     return;
