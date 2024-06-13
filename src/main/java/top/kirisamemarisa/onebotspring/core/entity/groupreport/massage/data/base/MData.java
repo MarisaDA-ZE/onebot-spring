@@ -2,6 +2,7 @@ package top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.bas
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.util.ObjectUtils;
+import top.kirisamemarisa.onebotspring.annotation.MessageField;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.*;
 import top.kirisamemarisa.onebotspring.core.enums.ContentType;
 import top.kirisamemarisa.onebotspring.core.util.MrsUtil;
@@ -40,37 +41,6 @@ public abstract class MData {
         String t = (String) map.get("type");
         LinkedHashMap<?, ?> d = (LinkedHashMap<?, ?>) map.get("data");
         return translateByType(t, d);
-        /* 以前的一种转换写法
-         *try {
-         *    ContentType type = ContentType.translate(t);
-         *    if (type != null) {
-         *        switch (type) {
-         *            // at消息
-         *            case AT -> {
-         *                return toMassageObject(d, MAt.class);
-         *            }
-         *            // 文本消息
-         *            case TEXT -> {
-         *                return toMassageObject(d, MText.class);
-         *            }
-         *            // 图片消息
-         *            case IMAGE -> {
-         *                return toMassageObject(d, MImage.class);
-         *            }
-         *            // 其他类型写不了，因为上报的都是unknown
-         *            // 一些未知类型
-         *            case UNKNOWN -> {
-         *                return new MUnknown();
-         *            }
-         *        }
-         *    }
-         *    return null;
-         *} catch (Exception e) {
-         *    System.err.println("消息内容转换出错了！");
-         *    e.printStackTrace();
-         *    return null;
-         *}
-         */
     }
 
     /**
@@ -127,6 +97,7 @@ public abstract class MData {
      */
     private static <T> T toMDataChild(Object o, Class<T> clazz) {
         if (o instanceof JSONObject params) {
+            System.out.println(params);
             return toMassageObject(params, clazz);
         } else if (o instanceof LinkedHashMap<?, ?> params) {
             return toMassageObject(params, clazz);
@@ -150,10 +121,14 @@ public abstract class MData {
             res = clazz.cast(instance);
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-                String fieldName = field.getName();
-                String underscore = MrsUtil.toUnderscore(fieldName);
+                MessageField annotation = field.getAnnotation(MessageField.class);
+                String fieldName;
+                if (annotation == null) {
+                    fieldName = field.getName();
+                } else {
+                    fieldName = annotation.value();
+                }
                 Object value = o.get(fieldName);
-                if (ObjectUtils.isEmpty(value)) value = o.get(underscore);
                 field.set(res, value);
             }
         } catch (Exception e) {
@@ -178,16 +153,15 @@ public abstract class MData {
             res = clazz.cast(instance);
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-                String fieldName = field.getName();
-                String underscore = MrsUtil.toUnderscore(fieldName);
-                // 两种命名方式都找一下
-                if (map.containsKey(fieldName)) {
-                    Object value = map.get(fieldName);
-                    field.set(res, value);
-                } else if (map.containsKey(underscore)) {
-                    Object value = map.get(underscore);
-                    field.set(res, value);
+                MessageField annotation = field.getAnnotation(MessageField.class);
+                String fieldName;
+                if (annotation == null) {
+                    fieldName = field.getName();
+                } else {
+                    fieldName = annotation.value();
                 }
+                Object value = map.get(fieldName);
+                field.set(res, value);
             }
         } catch (Exception e) {
             e.printStackTrace();

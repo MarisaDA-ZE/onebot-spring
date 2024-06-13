@@ -51,4 +51,21 @@ public class MrsUtil {
         }
         return underscore.toString();
     }
+
+    /**
+     * 判断给定的类类型是否为复杂数据类型。
+     * @param type 要检查的类类型
+     * @return 如果是复杂数据类型返回true，否则返回false
+     */
+    public static boolean isComplexDataType(Class<?> type) {
+        if (type.isArray()) {
+            // 检查数组的组件类型
+            Class<?> componentType = type.getComponentType();
+            return isComplexDataType(componentType);
+        } else {
+            return !type.isPrimitive() &&
+                    type != String.class &&
+                    !type.getName().startsWith("java.lang.");
+        }
+    }
 }

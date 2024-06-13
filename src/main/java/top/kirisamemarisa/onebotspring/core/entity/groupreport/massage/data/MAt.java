@@ -1,9 +1,9 @@
 package top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import top.kirisamemarisa.onebotspring.annotation.MessageField;
 import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base.MData;
 
 /**
@@ -17,6 +17,6 @@ import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.base
 public class MAt extends MData {
 
     // 被@用户的QQ号
-    @JSONField(name = "mention")
+    @MessageField("qq")
     private String mention;
 }
