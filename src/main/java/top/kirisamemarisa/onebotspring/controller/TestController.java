@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
-import top.kirisamemarisa.onebotspring.service.IBotConfigService;
+import top.kirisamemarisa.onebotspring.entity.onebot.system.BotConfig;
+import top.kirisamemarisa.onebotspring.service.onebot.IBotConfigService;
 
 import java.util.concurrent.TimeUnit;
 

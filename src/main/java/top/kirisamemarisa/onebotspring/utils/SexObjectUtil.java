@@ -2,10 +2,10 @@ package top.kirisamemarisa.onebotspring.utils;
 
 
 import org.springframework.stereotype.Component;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
-import top.kirisamemarisa.onebotspring.entity.sexes.CmdPreParam;
-import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexWife;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.cq.cqitem.CQAt;
+import top.kirisamemarisa.onebotspring.entity.onebot.sexes.CmdPreParam;
+import top.kirisamemarisa.onebotspring.entity.onebot.sexes.GroupSexWife;
 import top.kirisamemarisa.onebotspring.enums.CommandType;
 import top.kirisamemarisa.onebotspring.enums.Emoji;
 
@@ -28,7 +28,7 @@ public class SexObjectUtil {
      * @return 结果
      */
     public static CmdPreParam getPreParam(GroupReport groupReport, List<String> cmds) {
-        List<MAt> ats = CommandUtil.getAts(groupReport);
+        List<CQAt> ats = CommandUtil.getAts(groupReport);
         String target;
         int count;
         String error = "指令格式有误哦，详情请查看涩涩帮助" + Emoji.SORROW_9.getEmoji();
@@ -51,7 +51,7 @@ public class SexObjectUtil {
             }
             // @<target> /指令 [count次]
             case 1 -> {
-                target = ats.get(0).getMention();
+                target = ats.get(0).getQq();
                 String command = CommandUtil.concatenateMText(groupReport);
                 String trimmed = CommandUtil.trimCommand(command, cmds);
                 if (trimmed == null) {

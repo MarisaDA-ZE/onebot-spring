@@ -3,12 +3,11 @@ package top.kirisamemarisa.onebotspring.scheduledtask;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import top.kirisamemarisa.onebotspring.common.Constant;
-import top.kirisamemarisa.onebotspring.entity.sexes.GroupSexUser;
-import top.kirisamemarisa.onebotspring.entity.sexes.GroupWife;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
+import top.kirisamemarisa.onebotspring.entity.onebot.sexes.GroupSexUser;
+import top.kirisamemarisa.onebotspring.entity.onebot.sexes.GroupWife;
+import top.kirisamemarisa.onebotspring.service.onebot.sexes.IGroupSexUserService;
+import top.kirisamemarisa.onebotspring.service.onebot.sexes.IGroupWifeService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,10 +19,12 @@ import java.util.concurrent.TimeUnit;
  * @Description: 定时任务
  * @Date: 2024/2/21
  */
-@Component
+//@Component
 public class ScheduledTask {
 
-
+    static {
+        System.out.println(">>>>>>>>");
+    }
     @Resource
     private IGroupWifeService groupWifeService;
 

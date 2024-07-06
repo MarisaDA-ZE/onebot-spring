@@ -6,10 +6,11 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
-import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
-import top.kirisamemarisa.onebotspring.service.IBotConfigService;
+import top.kirisamemarisa.onebotspring.core.entity.reports.common.Sender;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.PrivateReport;
+import top.kirisamemarisa.onebotspring.entity.onebot.system.BotConfig;
+import top.kirisamemarisa.onebotspring.service.onebot.IBotConfigService;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -34,11 +35,11 @@ public class BotUtil {
     /**
      * 获取机器人对该群的配置信息
      *
-     * @param groupReport 消息对象
+     * @param GroupReport 消息对象
      * @return 配置信息
      */
-    public BotConfig getGroupConfig(GroupReport groupReport) {
-        String sourceId = groupReport.getGroupId();
+    public BotConfig getGroupConfig(GroupReport GroupReport) {
+        String sourceId = GroupReport.getGroupId();
         BotConfig config = null;
         // 尝试从redis中读
         try {
@@ -57,7 +58,7 @@ public class BotUtil {
      * @param groupReport 消息对象
      * @return 配置信息
      */
-    public BotConfig getFriendConfig(GroupReport groupReport) {
+    public BotConfig getFriendConfig(PrivateReport groupReport) {
         Sender sender = groupReport.getSender();
         String userId = sender.getUserId();
         BotConfig config = null;

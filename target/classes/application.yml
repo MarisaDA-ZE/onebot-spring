@@ -5,10 +5,20 @@ server:
 spring:
   # MySQL配置
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.10.101:3306/one_bot?useUnicode=true&characterEncoding=utf8
-    username: marisa
-    password: $pwdByOnlineSQL9563#
+    dynamic:
+      primary: one-bot
+      strict: false
+      datasource:
+        one-bot:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://192.168.10.101:3306/one_bot?useUnicode=true&characterEncoding=utf8
+          username: marisa
+          password: $pwdByOnlineSQL9563#
+        mrs-pixiv:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://192.168.10.101:3306/mrs-pixiv?useUnicode=true&characterEncoding=utf8
+          username: marisa
+          password: $pwdByOnlineSQL9563#
   # Redis配置
   data:
     redis:
@@ -51,14 +61,20 @@ mybatis-plus:
 mrs-bot:
   # 命令合集包
   commands: top.kirisamemarisa.onebotspring
+  # 机器人QQ
+  bot-qq: 3184397908
   # 默认客户端的地址
   default-client-url: http://192.168.10.101:3000
+
+  #pixiv 配置
+  pixiv:
+    # 图片代理
+    proxy: i.kmarisa.icu
   # bert vits2语音模型配置
   bv2:
-    client: http://192.168.10.101:8860          # 语音服务地址
-    audio-service: http://192.168.10.101:8022   # 生成文件的地址
-    model-name: "delta"                         # 语音模型名字
+    # 语音服务地址
+    # 生成文件的地址
+    # 语音模型名字
   # 第三方接口
   other-api:
     # 第三方色图API
-    sex-image-url: https://pixiv.yuki.sh/api/recommend

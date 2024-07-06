@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.kirisamemarisa.onebotspring.mapper.mrspixiv.IllustrationMapper">
+
+    <select id="selectRandomOne" resultType="top.kirisamemarisa.onebotspring.entity.mrspixiv.Illustration">
+        SELECT * FROM illustration
+        <where>
+            <if test="isR18 != null">
+                is_r18 = #{isR18}
+            </if>
+
+            <if test="(isR18 != null) and (tags != null)">
+                AND (
+            </if>
+
+            <if test="tags != null">
+                title like CONCAT( "%", #{tags}, "%")
+                OR tags LIKE CONCAT( "%", #{tags}, "%")
+            </if>
+            <if test="(isR18 != null) and (tags != null)">
+                )
+            </if>
+        </where>
+        ORDER BY RAND() LIMIT 1
+    </select>
+
+</mapper>

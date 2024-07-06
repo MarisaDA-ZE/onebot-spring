@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
 import org.reflections.Reflections;
+import top.kirisamemarisa.onebotspring.core.entity.reports.base.MrsReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,14 +57,12 @@ public class CommandLoader {
     /**
      * 执行命令
      *
-     * @param groupReport 消息
+     * @param report 消息
      */
-    public void execute(GroupReport groupReport) {
-        System.out.println(commands);
-        System.out.println(groupReport);
+    public void execute(MrsReport report) {
         for (MrsCommand cmd : commands) {
-            if (cmd.trigger(groupReport)) {
-                cmd.action(groupReport);
+            if (cmd.trigger(report)) {
+                cmd.action(report);
             }
         }
     }

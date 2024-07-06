@@ -8,18 +8,22 @@ import top.kirisamemarisa.onebotspring.common.Constant;
 import top.kirisamemarisa.onebotspring.core.annotation.BotCommand;
 import top.kirisamemarisa.onebotspring.core.api.ClientApi;
 import top.kirisamemarisa.onebotspring.core.command.MrsCommand;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.Sender;
-import top.kirisamemarisa.onebotspring.core.enums.MassageType;
+import top.kirisamemarisa.onebotspring.core.entity.reports.base.MrsReport;
+import top.kirisamemarisa.onebotspring.core.entity.reports.common.Sender;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.PrivateReport;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.base.MessageReport;
+import top.kirisamemarisa.onebotspring.core.enums.reports.message.MessageType;
 import top.kirisamemarisa.onebotspring.core.util.BotUtil;
-import top.kirisamemarisa.onebotspring.entity.sexes.*;
-import top.kirisamemarisa.onebotspring.entity.system.BotConfig;
+import top.kirisamemarisa.onebotspring.core.util.CQMessageTemplate;
+import top.kirisamemarisa.onebotspring.entity.onebot.sexes.*;
+import top.kirisamemarisa.onebotspring.entity.onebot.system.BotConfig;
 import top.kirisamemarisa.onebotspring.enums.Emoji;
 import top.kirisamemarisa.onebotspring.enums.SexType;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexDetailService;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexUserService;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupSexWifeService;
-import top.kirisamemarisa.onebotspring.service.sexes.IGroupWifeService;
+import top.kirisamemarisa.onebotspring.service.onebot.sexes.IGroupSexDetailService;
+import top.kirisamemarisa.onebotspring.service.onebot.sexes.IGroupSexUserService;
+import top.kirisamemarisa.onebotspring.service.onebot.sexes.IGroupSexWifeService;
+import top.kirisamemarisa.onebotspring.service.onebot.sexes.IGroupWifeService;
 import top.kirisamemarisa.onebotspring.utils.*;
 
 import java.util.ArrayList;
@@ -56,30 +60,39 @@ public class Rub implements MrsCommand {
     }
 
     @Override
-    public boolean trigger(GroupReport groupReport) {
-        String cmdString = CommandUtil.concatenateMText(groupReport);
-        return CommandUtil.containsCommands(cmdString, cmds);
+    public boolean trigger(MrsReport report) {
+//        if (!(report instanceof GroupReport groupReport)) {
+//            return false;
+//        }
+//        String cmdString = CommandUtil.concatenateMText(groupReport);
+//        return CommandUtil.containsCommands(cmdString, cmds);
+        return false;
     }
 
     @Override
-    public void action(GroupReport groupReport) {
+    public void action(MrsReport report) {
+        if (!(report instanceof MessageReport messageReport)) {
+            return;
+        }
         System.out.println("蹭蹭...");
-        MassageType messageType = groupReport.getMessageType();
+        MessageType messageType = messageReport.getMessageType();
         String url = null;
         String template = null;
 
         switch (messageType) {
             // 私聊操作
             case PRIVATE -> {
-                BotConfig config = botUtil.getFriendConfig(groupReport);
+                PrivateReport privateReport = (PrivateReport) messageReport;
+                BotConfig config = botUtil.getFriendConfig(privateReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
-                Sender sender = groupReport.getSender();
+                Sender sender = privateReport.getSender();
                 String s = "私聊不允许蹭蹭操作" + Emoji.DISGUST_8.getEmoji();
-                template = MessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
+                template = CQMessageTemplate.friendTextTemplateSingle(sender.getUserId(), s);
             }
 
             // 群聊操作
             case GROUP -> {
+                GroupReport groupReport = (GroupReport) messageReport;
                 BotConfig config = botUtil.getGroupConfig(groupReport);
                 url = config.getClientUrl() + ClientApi.SEND_MSG.getApiURL();
                 String groupId = groupReport.getGroupId();
@@ -89,14 +102,14 @@ public class Rub implements MrsCommand {
 
                 // 如果包含错误信息
                 if (StrUtil.isNotEmpty(params.getError())) {
-                    MessageTemplate.sendGroupMessage(url, groupId, params.getError());
+                    CQMessageTemplate.sendTextMessage(url, groupId, params.getError());
                     return;
                 }
 
                 // 限制次数
                 if (params.getCount() > 20) {
                     String content = "蹭太多还是会累的（不能超过20次哦）" + Emoji.SORROW_9.getEmoji();
-                    MessageTemplate.sendGroupMessage(url, groupId, content);
+                    CQMessageTemplate.sendTextMessage(url, groupId, content);
                     return;
                 }
 
@@ -105,7 +118,7 @@ public class Rub implements MrsCommand {
                 if (ObjectUtils.isEmpty(sexUser)) {
                     System.err.println(userQq + "账号未注册(Rub.class)");
                     String content = "您（在本群）还未注册账号，请先注册后使用" + Emoji.SORROW_9.getEmoji();
-                    MessageTemplate.sendGroupMessage(url, groupId, content);
+                    CQMessageTemplate.sendTextMessage(url, groupId, content);
                     return;
                 }
 
@@ -116,7 +129,7 @@ public class Rub implements MrsCommand {
                     // 没有满足条件的群老婆
                     case 0 -> {
                         String content = "没有找到爱称／QQ为“" + params.getUserId() + "”的群老婆，可能为群老婆未绑定或者QQ／爱称输入有误";
-                        MessageTemplate.sendGroupMessage(url, groupId, content);
+                        CQMessageTemplate.sendTextMessage(url, groupId, content);
                         return;
                     }
                     // 找到对应的群老婆
@@ -240,11 +253,11 @@ public class Rub implements MrsCommand {
                     // 条件不够准确导致找到了
                     default -> {
                         String content = SexObjectUtil.moreOneTarget(sexWives);
-                        MessageTemplate.sendGroupMessage(url, groupId, content);
+                        CQMessageTemplate.sendTextMessage(url, groupId, content);
                         return;
                     }
                 }
-                template = MessageTemplate.groupTextTemplateSingle(groupId, text);
+                template = CQMessageTemplate.groupTextTemplateSingle(groupId, text);
             }
         }
         HttpUtils.post(url, template);

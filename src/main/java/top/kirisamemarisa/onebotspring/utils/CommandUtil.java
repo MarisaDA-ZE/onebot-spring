@@ -2,12 +2,12 @@ package top.kirisamemarisa.onebotspring.utils;
 
 import cn.hutool.core.util.StrUtil;
 import org.springframework.util.ObjectUtils;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.GroupReport;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.Message;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MAt;
-import top.kirisamemarisa.onebotspring.core.entity.groupreport.massage.data.MText;
-import top.kirisamemarisa.onebotspring.core.enums.ContentType;
-import top.kirisamemarisa.onebotspring.core.enums.MassageType;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.GroupReport;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.cq.CQMessage;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.cq.cqitem.CQAt;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.cq.cqitem.CQText;
+import top.kirisamemarisa.onebotspring.core.enums.reports.message.MessageType;
+import top.kirisamemarisa.onebotspring.core.enums.reports.message.cq.CQMessageType;
 import top.kirisamemarisa.onebotspring.enums.CommandType;
 
 import java.util.ArrayList;
@@ -34,14 +34,14 @@ public class CommandUtil {
      */
     public static boolean hasAtSelf(GroupReport groupReport) {
         String selfId = groupReport.getSelfId();
-        MassageType messageType = groupReport.getMessageType();
-        Message[] messages = groupReport.getMessage();
-        if (messageType == MassageType.GROUP) {
+        MessageType messageType = groupReport.getMessageType();
+        CQMessage[] messages = groupReport.getMessages();
+        if (messageType == MessageType.GROUP) {
             List<?> ats = Arrays.stream(messages).filter(msg -> {
                 // 存在at则判断at的是不是自己
-                if (msg.getType() == ContentType.AT) {
-                    MAt at = (MAt) msg.getData();
-                    String target = at.getMention();
+                if (msg.getType() == CQMessageType.AT) {
+                    CQAt at = (CQAt) msg.getData();
+                    String target = at.getQq();
                     return (selfId + "").equals(target);
                 }
                 return false;
@@ -58,13 +58,13 @@ public class CommandUtil {
      * @return .
      */
     public static int getMsgAtCount(GroupReport groupReport) {
-        MassageType messageType = groupReport.getMessageType();
-        if (messageType == MassageType.PRIVATE) return 0;
-        Message[] messages = groupReport.getMessage();
+        MessageType messageType = groupReport.getMessageType();
+        if (messageType == MessageType.PRIVATE) return 0;
+        CQMessage[] messages = groupReport.getMessages();
         int count = 0;
-        for (Message msg : messages) {
-            ContentType type = msg.getType();
-            if (type == ContentType.AT) count++;
+        for (CQMessage msg : messages) {
+            CQMessageType type = msg.getType();
+            if (type == CQMessageType.AT) count++;
         }
         return count;
     }
@@ -75,15 +75,15 @@ public class CommandUtil {
      * @param groupReport .
      * @return .
      */
-    public static List<MAt> getAts(GroupReport groupReport) {
-        MassageType messageType = groupReport.getMessageType();
-        if (messageType == MassageType.PRIVATE) return new ArrayList<>();
-        Message[] messages = groupReport.getMessage();
-        List<MAt> ats = new ArrayList<>();
-        for (Message msg : messages) {
-            ContentType type = msg.getType();
-            if (type == ContentType.AT) {
-                MAt at = (MAt) msg.getData();
+    public static List<CQAt> getAts(GroupReport groupReport) {
+        MessageType messageType = groupReport.getMessageType();
+        if (messageType == MessageType.PRIVATE) return new ArrayList<>();
+        CQMessage[] messages = groupReport.getMessages();
+        List<CQAt> ats = new ArrayList<>();
+        for (CQMessage msg : messages) {
+            CQMessageType type = msg.getType();
+            if (type == CQMessageType.AT) {
+                CQAt at = (CQAt) msg.getData();
                 ats.add(at);
             }
         }
@@ -99,16 +99,16 @@ public class CommandUtil {
      * @return 排除后的上报
      */
     public static GroupReport excludeAtSelfOne(GroupReport groupReport) {
-        Message[] messages = groupReport.getMessage();
+        CQMessage[] messages = groupReport.getMessages();
         String selfId = groupReport.getSelfId();
-        List<Message> messageList = new ArrayList<>();
+        List<CQMessage> messageList = new ArrayList<>();
         boolean first = true;
-        for (Message message : messages) {
-            ContentType type = message.getType();
+        for (CQMessage message : messages) {
+            CQMessageType type = message.getType();
             switch (type) {
                 case AT -> {
-                    MAt at = (MAt) message.getData();
-                    String atId = at.getMention();
+                    CQAt at = (CQAt) message.getData();
+                    String atId = at.getQq();
                     if (first) {
                         // 是第一次at自己
                         if ((atId + "").equals(selfId)) {
@@ -121,8 +121,8 @@ public class CommandUtil {
                     }
                 }
                 case TEXT -> {
-                    MText mText = (MText) message.getData();
-                    String text = mText.getText();
+                    CQText cqText = (CQText) message.getData();
+                    String text = cqText.getText();
                     if (StrUtil.isNotBlank(text.trim())) {
                         messageList.add(message);
                     }
@@ -130,15 +130,15 @@ public class CommandUtil {
                 default -> messageList.add(message);
             }
         }
-        groupReport.setMessage(messageList.toArray(new Message[0]));
+        groupReport.setMessages(messageList.toArray(new CQMessage[0]));
         return groupReport;
     }
 
     /**
      * 检查command中是否有满足任何一个cmds列表的情况
      *
-     * @param command   命令字符串
-     * @param cmds      命令列表
+     * @param command 命令字符串
+     * @param cmds    命令列表
      * @return 是否匹配
      */
     public static boolean containsCommands(String command, List<String> cmds) {
@@ -173,7 +173,7 @@ public class CommandUtil {
      * @return .
      */
     public static String concatenateMText(GroupReport groupReport) {
-        Message[] messages = groupReport.getMessage();
+        CQMessage[] messages = groupReport.getMessages();
         return concatenateMText(messages);
     }
 
@@ -183,7 +183,7 @@ public class CommandUtil {
      * @param messages 消息数组
      * @return .
      */
-    public static String concatenateMText(Message[] messages) {
+    public static String concatenateMText(CQMessage[] messages) {
         return concatenateMText(messages, DEFAULT_CMD_SEPARATOR);
     }
 
@@ -194,13 +194,13 @@ public class CommandUtil {
      * @param split    分隔符
      * @return .
      */
-    public static String concatenateMText(Message[] messages, String split) {
+    public static String concatenateMText(CQMessage[] messages, String split) {
         StringBuilder sb = new StringBuilder();
-        for (Message msg : messages) {
-            ContentType type = msg.getType();
-            if (type == ContentType.TEXT) {
-                MText mText = (MText) msg.getData();
-                String text = mText.getText();
+        for (CQMessage msg : messages) {
+            CQMessageType type = msg.getType();
+            if (type == CQMessageType.TEXT) {
+                CQText cqText = (CQText) msg.getData();
+                String text = cqText.getText();
                 String trimmed = text.trim();
                 if (StrUtil.isNotBlank(trimmed)) sb.append(trimmed).append(split);
             }

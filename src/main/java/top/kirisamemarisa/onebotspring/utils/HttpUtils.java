@@ -1,13 +1,8 @@
 package top.kirisamemarisa.onebotspring.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * @Author: MarisaDAZE
@@ -61,5 +56,25 @@ public class HttpUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+
+    /**
+     * 替换URL的域名代理
+     *
+     * @param url   资源地址
+     * @param proxy 域名代理（不要协议头、尾部的斜杠，形如 "i.kmarisa.icu"）
+     * @return 替换代理后的URL地址
+     */
+    public static String setUrlProxy(String url, String proxy) {
+
+        int schemeEnd = url.indexOf("://") + 3;
+        int domainEnd = url.indexOf('/', schemeEnd);
+        if (domainEnd == -1) {
+            domainEnd = url.length();
+        }
+        String scheme = url.substring(0, schemeEnd);
+        String pathAndQuery = url.substring(domainEnd);
+        return scheme + proxy + pathAndQuery;
     }
 }
