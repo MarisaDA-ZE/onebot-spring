@@ -22,7 +22,8 @@ public class BotController {
     @PostMapping("/")
     public void test(@RequestBody JSONObject jsonObject) {
         System.out.println("data: " + jsonObject);
-        MrsReport groupReport =  MrsReport.translate(jsonObject);
-        commandLoader.execute(groupReport);
+        MrsReport report =  MrsReport.translate(jsonObject);
+        System.out.println(report);
+        commandLoader.execute(report);
     }
 }
