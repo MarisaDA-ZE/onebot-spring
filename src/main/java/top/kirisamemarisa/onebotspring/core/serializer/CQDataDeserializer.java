@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.reader.ObjectReader;
 import top.kirisamemarisa.onebotspring.core.entity.reports.message.cq.CQMessage;
 import top.kirisamemarisa.onebotspring.core.entity.reports.message.cq.cqitem.*;
+import top.kirisamemarisa.onebotspring.core.entity.reports.message.cq.cqitem.base.CQData;
 import top.kirisamemarisa.onebotspring.core.enums.reports.message.cq.CQMessageType;
 import top.kirisamemarisa.onebotspring.core.util.EnumUtils;
 
@@ -44,33 +45,36 @@ public class CQDataDeserializer implements ObjectReader<CQMessage[]> {
      * @return 转换结果
      */
     public CQMessage cqTranslate(CQMessageType type, JSONObject data) {
+        Class<? extends CQData> clazz = null;
+        switch (type) {
+            case ANONYMOUS -> clazz = CQAnonymous.class;
+            case AT -> clazz = CQAt.class;
+            case CARD_IMAGE -> clazz = CQCardimage.class;
+            case CONTACT -> clazz = CQContact.class;
+            case DICE -> clazz = CQDice.class;
+            case FACE -> clazz = CQFace.class;
+            case FORWARD -> clazz = CQForward.class;
+            case GIFT -> clazz = CQGift.class;
+            case IMAGE -> clazz = CQImage.class;
+            case JSON -> clazz = CQJson.class;
+            case LOCATION -> clazz = CQLocation.class;
+            case MUSIC -> clazz = CQMusic.class;
+            case NODE -> clazz = CQNode.class;
+            case POKE -> clazz = CQPoke.class;
+            case REDBAG -> clazz = CQRedbag.class;
+            case REPLY -> clazz = CQReply.class;
+            case RPS -> clazz = CQRps.class;
+            case SHAKE -> clazz = CQShake.class;
+            case SHARE -> clazz = CQShare.class;
+            case TEXT -> clazz = CQText.class;
+            case VIDEO -> clazz = CQVideo.class;
+            case VOICE -> clazz = CQVoice.class;
+            case XML -> clazz = CQXml.class;
+        }
+        String dt = data.toJSONString();
         CQMessage result = new CQMessage();
         result.setType(type);
-        switch (type) {
-            case ANONYMOUS -> result.setData(JSONObject.parseObject(data.toJSONString(), CQAnonymous.class));
-            case AT -> result.setData(JSONObject.parseObject(data.toJSONString(), CQAt.class));
-            case CARD_IMAGE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQCardimage.class));
-            case CONTACT -> result.setData(JSONObject.parseObject(data.toJSONString(), CQContact.class));
-            case DICE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQDice.class));
-            case FACE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQFace.class));
-            case FORWARD -> result.setData(JSONObject.parseObject(data.toJSONString(), CQForward.class));
-            case GIFT -> result.setData(JSONObject.parseObject(data.toJSONString(), CQGift.class));
-            case IMAGE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQImage.class));
-            case JSON -> result.setData(JSONObject.parseObject(data.toJSONString(), CQJson.class));
-            case LOCATION -> result.setData(JSONObject.parseObject(data.toJSONString(), CQLocation.class));
-            case MUSIC -> result.setData(JSONObject.parseObject(data.toJSONString(), CQMusic.class));
-            case NODE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQNode.class));
-            case POKE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQPoke.class));
-            case REDBAG -> result.setData(JSONObject.parseObject(data.toJSONString(), CQRedbag.class));
-            case REPLY -> result.setData(JSONObject.parseObject(data.toJSONString(), CQReply.class));
-            case RPS -> result.setData(JSONObject.parseObject(data.toJSONString(), CQRps.class));
-            case SHAKE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQShake.class));
-            case SHARE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQShare.class));
-            case TEXT -> result.setData(JSONObject.parseObject(data.toJSONString(), CQText.class));
-            case VIDEO -> result.setData(JSONObject.parseObject(data.toJSONString(), CQVideo.class));
-            case VOICE -> result.setData(JSONObject.parseObject(data.toJSONString(), CQVoice.class));
-            case XML -> result.setData(JSONObject.parseObject(data.toJSONString(), CQXml.class));
-        }
+        result.setData(JSONObject.parseObject(dt, clazz));
         return result;
     }
 }
